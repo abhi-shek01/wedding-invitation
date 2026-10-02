@@ -1,6 +1,6 @@
 # Swapnil & Ritu — Wedding Invitation
 
-The first invitation page uses Purvi's original palace background, Ganeshji at the top, “ॐ गणेशाय नमः”, and Swapnil and Ritu's family details from the reference screenshot.
+The first invitation page uses a recreated version of Purvi's palace background in the ivory, peach, champagne, and muted olive watercolour style of the supplied next-page floral image. Ganeshji appears at the top, followed by “ॐ गणेशाय नमः” and Swapnil and Ritu's family details from the reference screenshot.
 
 ## Preview
 
@@ -12,6 +12,7 @@ Edit **invitation.config.js** for all client content and theme settings:
 
 - `meta`: page title, description, and language.
 - `theme`: colours, fonts, background path, opacity, and entrance animation.
+- `theme.backgroundBlur` and `theme.whiteScreenOpacity`: background blur and the light white overlay. Use `"0px"` and `0` to remove them. Text and Ganeshji stay sharp.
 - `sectionOrder`: ordering of implemented website sections.
 - `sections.invitation`: Ganeshji image, mantra, invitation wording, couple order, names, parents, and grandparents.
 
@@ -21,7 +22,9 @@ Images and fonts are stored in `assets/`, and their paths are controlled through
 
 ## Asset sources
 
-- Palace artwork: recovered unchanged from the original Purvi & Yash invitation at `https://purviandyashweddinginvite.lovable.app/__l5e/assets-v1/dbffe025-a268-4a9c-8db0-38e363294e16/palace-gate.png`.
+- Current palace artwork: `assets/palace-gate-warm.png`, recreated with the built-in image tool using the original palace as the edit target and the user's floral image as the style reference. The exact prompt is saved in `assets/palace-gate-warm-prompt.txt`.
+- Original palace artwork (preserved): recovered from the original Purvi & Yash invitation at `https://purviandyashweddinginvite.lovable.app/__l5e/assets-v1/dbffe025-a268-4a9c-8db0-38e363294e16/palace-gate.png`.
+- Next-page background reference: the user's supplied image is preserved as `assets/next-page-floral-reference.png`; it is not rendered on the first page.
 - Fonts: Great Vibes and EB Garamond, downloaded from Google Fonts and served locally.
 - Ganeshji: generated gold invitation illustration; see `assets/ganeshji-prompt.txt` for the prompt.
 

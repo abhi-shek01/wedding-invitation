@@ -25,12 +25,14 @@
   const themeProperties = {
     paper: "--paper",
     ink: "--ink",
-    burgundy: "--burgundy",
+    accent: "--accent",
     gold: "--gold",
     bodyFont: "--body-font",
     nameFont: "--name-font",
     backgroundPosition: "--background-position",
     backgroundOpacity: "--background-opacity",
+    backgroundBlur: "--background-blur",
+    whiteScreenOpacity: "--white-screen-opacity",
     textWashOpacity: "--text-wash-opacity",
   };
   for (const [key, property] of Object.entries(themeProperties)) {
@@ -53,7 +55,7 @@
     page.setAttribute("aria-labelledby", "couple-names");
 
     const background = document.createElement("img");
-    background.className = "palace-background";
+    background.className = "invitation-background";
     background.src = config.theme.background;
     background.alt = "";
     background.setAttribute("aria-hidden", "true");

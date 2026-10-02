@@ -15,15 +15,17 @@
 }
 
 :root {
-  --paper: #fffaf2;
-  --ink: #573b35;
-  --burgundy: #a9193e;
-  --gold: #b08b49;
+  --paper: #faf3e9;
+  --ink: #49372b;
+  --accent: #735139;
+  --gold: #b59659;
   --body-font: "EB Garamond", Georgia, serif;
   --name-font: "Great Vibes", cursive;
   --background-position: center bottom;
-  --background-opacity: 0.6;
-  --text-wash-opacity: 0.76;
+  --background-opacity: 0.85;
+  --background-blur: 1.5px;
+  --white-screen-opacity: 0.2;
+  --text-wash-opacity: 0.84;
 }
 
 * { box-sizing: border-box; }
@@ -42,7 +44,7 @@ p, h1, h2 { margin: 0; }
   background: var(--paper);
 }
 
-.palace-background {
+.invitation-background {
   position: absolute;
   inset: 0;
   z-index: -2;
@@ -51,6 +53,7 @@ p, h1, h2 { margin: 0; }
   object-fit: cover;
   object-position: var(--background-position);
   opacity: var(--background-opacity);
+  filter: blur(var(--background-blur));
   pointer-events: none;
 }
 
@@ -59,7 +62,9 @@ p, h1, h2 { margin: 0; }
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(ellipse 44% 60% at 50% 32%, rgb(255 250 242 / var(--text-wash-opacity)), transparent 100%);
+  background:
+    linear-gradient(rgb(255 255 255 / var(--white-screen-opacity)), rgb(255 255 255 / var(--white-screen-opacity))),
+    radial-gradient(ellipse 65% 48% at 50% 49%, color-mix(in srgb, var(--paper) calc(var(--text-wash-opacity) * 100%), transparent) 42%, transparent 100%);
   pointer-events: none;
 }
 
@@ -79,7 +84,7 @@ p, h1, h2 { margin: 0; }
 }
 
 .blessing {
-  color: var(--burgundy);
+  color: var(--accent);
   font-family: "Nirmala UI", "Kohinoor Devanagari", serif;
   font-size: clamp(17px, 2.6vw, 21px);
   line-height: 1.7;
@@ -116,7 +121,7 @@ p, h1, h2 { margin: 0; }
 
 .couple { width: 100%; }
 .person-name {
-  color: var(--burgundy);
+  color: var(--accent);
   font-family: var(--name-font);
   font-weight: 400;
   font-size: clamp(65px, 8vw, 88px);
@@ -128,19 +133,21 @@ p, h1, h2 { margin: 0; }
   max-width: 490px;
   margin-inline: auto;
   font-size: clamp(14px, 1.7vw, 17px);
+  font-weight: 500;
   line-height: 1.55;
   text-wrap: balance;
 }
 .grandparents {
   max-width: 450px;
   margin: 4px auto 0;
-  font-size: clamp(12px, 1.5vw, 14px);
+  font-size: clamp(13px, 1.5vw, 15px);
+  font-weight: 500;
   line-height: 1.6;
   font-style: italic;
   text-wrap: balance;
 }
 .connector {
-  color: var(--burgundy);
+  color: var(--accent);
   font-family: var(--name-font);
   font-size: 32px;
   line-height: 1.4;
@@ -168,12 +175,12 @@ p, h1, h2 { margin: 0; }
 
 @media (min-width: 760px) {
   .invitation-page { padding-bottom: 270px; }
-  .palace-background { object-fit: contain; }
+  .invitation-background { object-fit: contain; }
 }
 @media (max-width: 380px) {
   .invitation-page { padding-inline: 18px; }
   .parents { font-size: 13px; }
-  .grandparents { font-size: 12px; }
+  .grandparents { font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-entrance .invitation-content { animation: none; }
