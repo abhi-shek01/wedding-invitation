@@ -1,0 +1,10 @@
+{
+  "name": "wedding-invitation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A configurable wedding invitation, beginning with Swapnil and Ritu's welcome page.",
+  "scripts": {
+    "start": "node preview-server.cjs",
+    "dev": "node preview-server.cjs"
+  }
+}

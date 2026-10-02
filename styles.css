@@ -1,0 +1,180 @@
+@font-face {
+  font-family: "Great Vibes";
+  src: url("assets/fonts/great-vibes-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EB Garamond";
+  src: url("assets/fonts/eb-garamond-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+}
+
+:root {
+  --paper: #fffaf2;
+  --ink: #573b35;
+  --burgundy: #a9193e;
+  --gold: #b08b49;
+  --body-font: "EB Garamond", Georgia, serif;
+  --name-font: "Great Vibes", cursive;
+  --background-position: center bottom;
+  --background-opacity: 0.6;
+  --text-wash-opacity: 0.76;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 280px; background: var(--paper); }
+body { margin: 0; color: var(--ink); font-family: var(--body-font); -webkit-font-smoothing: antialiased; }
+p, h1, h2 { margin: 0; }
+
+.invitation-page {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: start center;
+  min-height: 100svh;
+  padding: clamp(28px, 4vh, 48px) 24px 230px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.palace-background {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--background-position);
+  opacity: var(--background-opacity);
+  pointer-events: none;
+}
+
+.invitation-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 44% 60% at 50% 32%, rgb(255 250 242 / var(--text-wash-opacity)), transparent 100%);
+  pointer-events: none;
+}
+
+.invitation-content {
+  width: min(100%, 640px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ganeshji {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+.blessing {
+  color: var(--burgundy);
+  font-family: "Nirmala UI", "Kohinoor Devanagari", serif;
+  font-size: clamp(17px, 2.6vw, 21px);
+  line-height: 1.7;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 156px;
+  margin: 20px 0 25px;
+  color: var(--gold);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.ornament::before, .ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+  opacity: 0.65;
+}
+.ornament::after { transform: rotate(180deg); }
+
+.introduction {
+  max-width: 360px;
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.55;
+  text-wrap: pretty;
+  margin-bottom: 26px;
+}
+
+.couple { width: 100%; }
+.person-name {
+  color: var(--burgundy);
+  font-family: var(--name-font);
+  font-weight: 400;
+  font-size: clamp(65px, 8vw, 88px);
+  line-height: 1.25;
+  padding: 0 14px;
+  margin-bottom: 8px;
+}
+.parents {
+  max-width: 490px;
+  margin-inline: auto;
+  font-size: clamp(14px, 1.7vw, 17px);
+  line-height: 1.55;
+  text-wrap: balance;
+}
+.grandparents {
+  max-width: 450px;
+  margin: 4px auto 0;
+  font-size: clamp(12px, 1.5vw, 14px);
+  line-height: 1.6;
+  font-style: italic;
+  text-wrap: balance;
+}
+.connector {
+  color: var(--burgundy);
+  font-family: var(--name-font);
+  font-size: 32px;
+  line-height: 1.4;
+  margin: 20px 0 12px;
+}
+.couple + .ornament { margin-top: 25px; margin-bottom: 0; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.animate-entrance .invitation-content { animation: arrive 900ms ease-out both; }
+@keyframes arrive {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 760px) {
+  .invitation-page { padding-bottom: 270px; }
+  .palace-background { object-fit: contain; }
+}
+@media (max-width: 380px) {
+  .invitation-page { padding-inline: 18px; }
+  .parents { font-size: 13px; }
+  .grandparents { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-entrance .invitation-content { animation: none; }
+}
