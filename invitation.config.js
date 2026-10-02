@@ -23,6 +23,18 @@ window.INVITATION_CONFIG = {
     entranceAnimation: true,
   },
   experience: {
+    audio: {
+      enabled: true,
+      src: "assets/audio/wedding-music.mp3",
+      defaultOn: true,
+      loop: true,
+      volume: 0.55,
+      onLabel: "Turn music off",
+      offLabel: "Turn music on",
+      buttonSize: "48px",
+      right: "18px",
+      bottom: "18px",
+    },
     pageWidth: "600px",
     smoothScroll: true,
     sectionTransitions: true,

@@ -45,6 +45,88 @@
   document.documentElement.style.setProperty("--page-width", experience.pageWidth || "600px");
   document.documentElement.classList.toggle("smooth-scroll", experience.smoothScroll === true);
 
+  const musicSettings = experience.audio;
+  if (musicSettings?.enabled && musicSettings.src) {
+    const audio = document.createElement("audio");
+    audio.className = "invitation-audio";
+    audio.src = musicSettings.src;
+    audio.loop = musicSettings.loop !== false;
+    audio.preload = "auto";
+    audio.volume = Math.max(0, Math.min(1, musicSettings.volume ?? 0.55));
+    audio.hidden = true;
+    let musicOn = musicSettings.defaultOn !== false;
+    audio.autoplay = musicOn;
+    const button = document.createElement("button");
+    button.className = "audio-toggle";
+    button.type = "button";
+    button.dataset.playback = musicOn ? "waiting" : "paused";
+    button.style.setProperty("--audio-button-size", musicSettings.buttonSize || "48px");
+    button.style.setProperty("--audio-right", musicSettings.right || "18px");
+    button.style.setProperty("--audio-bottom", musicSettings.bottom || "18px");
+    const namespace = "http://www.w3.org/2000/svg";
+    const icon = document.createElementNS(namespace, "svg");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("aria-hidden", "true");
+    for (const [className, shape] of [
+      ["audio-speaker", "M11 5 6 9H3v6h3l5 4V5Z"],
+      ["audio-waves", "M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"],
+      ["audio-muted-mark", "m16 9 5 6m0-6-5 6"],
+    ]) {
+      const path = document.createElementNS(namespace, "path");
+      path.setAttribute("class", className);
+      path.setAttribute("d", shape);
+      icon.append(path);
+    }
+    button.append(icon);
+    const updateButton = () => {
+      const label = musicOn ? musicSettings.onLabel || "Turn music off" : musicSettings.offLabel || "Turn music on";
+      button.setAttribute("aria-label", label);
+      button.setAttribute("aria-pressed", String(musicOn));
+      button.title = label;
+      button.classList.toggle("is-muted", !musicOn);
+    };
+    const startMusic = () => {
+      if (!musicOn || !audio.paused || audio.error) return;
+      // Audible autoplay may need a user gesture. Keep the default-on preference
+      // and retry within that gesture without interrupting cover/navigation actions.
+      audio.play().catch(() => {
+        button.dataset.playback = musicOn ? "waiting" : "paused";
+      });
+    };
+    audio.addEventListener("playing", () => {
+      if (!musicOn) audio.pause();
+      else button.dataset.playback = "playing";
+    });
+    audio.addEventListener("pause", () => { button.dataset.playback = "paused"; });
+    audio.addEventListener("error", () => {
+      button.dataset.playback = "unavailable";
+      button.disabled = true;
+      button.title = "Music unavailable";
+      button.setAttribute("aria-label", "Music unavailable");
+    });
+    button.addEventListener("click", () => {
+      musicOn = !musicOn;
+      audio.autoplay = musicOn;
+      if (musicOn) startMusic();
+      else {
+        audio.pause();
+        button.dataset.playback = "paused";
+      }
+      updateButton();
+    });
+    const startOnInteraction = (event) => {
+      if (!event.isTrusted || button.contains(event.target)) return;
+      if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
+      startMusic();
+    };
+    document.addEventListener("pointerup", startOnInteraction, { capture: true, passive: true });
+    document.addEventListener("click", startOnInteraction, { capture: true });
+    document.addEventListener("keydown", startOnInteraction, { capture: true });
+    updateButton();
+    document.body.append(audio, button);
+    startMusic();
+  }
+
   const ornament = () => {
     const divider = text("div", "ornament", "✧");
     divider.setAttribute("aria-hidden", "true");

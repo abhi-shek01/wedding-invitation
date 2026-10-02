@@ -17,6 +17,7 @@ Edit **invitation.config.js** for all client content and theme settings:
 - `theme.backgroundBlur` and `theme.whiteScreenOpacity`: background blur and the light white overlay. Use `"0px"` and `0` to remove them. Text and Ganeshji stay sharp.
 - `sectionOrder`: ordering of implemented website sections.
 - `experience`: shared page width, smooth scrolling, section entrance animations, the next-page link, and floating petal colours, count, opacity, and speed. All pages share a portrait canvas on desktop and fill the available width on mobile. Petals ignore pointer input, pause in background tabs, and are hidden when reduced motion is preferred.
+- `experience.audio`: the supplied looping wedding track, enabled by default from the cover, volume and fixed bottom-right toggle settings. One shared player continues across sections; tapping the button pauses/resumes it without restarting the track. If the browser blocks audible autoplay, it starts on the first interaction while music is enabled. Turning it off prevents subsequent page interactions from restarting it. The preview server serves MP3 files with byte ranges for mobile playback.
 - `experience.petals.deepColours` and `deepOpacity`: deeper petals mixed with the light palette. `experience.birds` controls the flying birds. Each effect's `sections` list limits it to Welcome (`invitation`) and Save the Date (`saveTheDate`). Layers are contained within those pages, so the cover and Events have no floating petals or birds. `sections.saveTheDate.monogram.floating` and `floatDurationSeconds` control the logo's gentle motion. All decorative motion respects reduced-motion preferences.
 - `sections.saveTheDate.wedding.ordinalDay`: adds English date suffixes such as “21st”. On mobile, the revealed card and countdown sit above the landmarks, with the closing line placed at the bottom of the artwork.
 - `sections.invitation`: Ganeshji image, mantra, invitation wording, couple order, names, parents, and grandparents.
@@ -52,3 +53,4 @@ Images and fonts are stored in `assets/`, and their paths are controlled through
 - Ganeshji: generated gold invitation illustration; see `assets/ganeshji-prompt.txt` for the prompt.
 
 Family names were supplied by the client and remain editable in the configuration.
+- Music: `assets/audio/wedding-music.mp3`, copied unchanged from the supplied `ReelAudio-16763.mp3`.

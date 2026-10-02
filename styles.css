@@ -32,6 +32,16 @@
 html { min-width: 280px; background: var(--paper); }
 html.smooth-scroll { scroll-behavior: smooth; }
 body { margin: 0; color: var(--ink); font-family: var(--body-font); -webkit-font-smoothing: antialiased; }
+.audio-toggle { position: fixed; z-index: 30; right: max(var(--audio-right, 18px), env(safe-area-inset-right)); bottom: max(var(--audio-bottom, 18px), env(safe-area-inset-bottom)); display: grid; place-items: center; width: var(--audio-button-size, 48px); height: var(--audio-button-size, 48px); padding: 12px; border: 1px solid var(--gold); border-radius: 50%; background: var(--accent); color: var(--paper); cursor: pointer; box-shadow: 0 3px 12px rgb(73 55 43 / 0.18); -webkit-tap-highlight-color: transparent; transition: transform 200ms ease, background 200ms ease; }
+.audio-toggle svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.audio-toggle .audio-muted-mark, .audio-toggle.is-muted .audio-waves { display: none; }
+.audio-toggle.is-muted .audio-muted-mark { display: block; }
+.audio-toggle.is-muted { background: var(--paper); color: var(--accent); }
+.audio-toggle:hover { transform: scale(1.04); }
+.audio-toggle:active { transform: scale(0.96); }
+.audio-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.audio-toggle:disabled { opacity: 0.55; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .audio-toggle { transition: none; } }
 body.cover-is-closed { overflow: hidden; }
 body.cover-is-closed:not(.cover-is-opening) .invitation-page { visibility: hidden; }
 body.cover-is-opening .invitation-page { animation: invitation-unfold var(--cover-opening-duration, 850ms) ease both; }
