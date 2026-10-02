@@ -29,6 +29,7 @@
     gold: "--gold",
     bodyFont: "--body-font",
     nameFont: "--name-font",
+    monogramFilter: "--monogram-filter",
     backgroundPosition: "--background-position",
     backgroundOpacity: "--background-opacity",
     backgroundBlur: "--background-blur",
@@ -302,7 +303,7 @@
       monogram.setAttribute("aria-label", section.monogram.alt);
       monogram.append(
         text("span", "monogram-initial", section.monogram.initials[0]),
-        text("span", "monogram-ampersand", "&"),
+        text("span", "monogram-ampersand", "|"),
         text("span", "monogram-initial", section.monogram.initials[1]),
       );
     }
@@ -691,6 +692,7 @@
   }
 
   const pages = [...root.querySelectorAll(".invitation-page")];
+  const pagePrompts = [];
   pages.forEach((page, index) => {
     const next = pages[index + 1];
     const key = page.dataset.section;
@@ -702,6 +704,7 @@
     link.append(text("span", "next-page-arrow", "↓"));
     page.classList.add("has-next-page");
     page.append(link);
+    pagePrompts.push({ page, link });
     link.addEventListener("click", (event) => {
       // Native anchor navigation retains the section URL and keyboard access.
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -709,6 +712,22 @@
       next.focus({ preventScroll: true });
     });
   });
+
+  let promptScrollFrame = 0;
+  const hideScrolledPrompts = () => {
+    promptScrollFrame = 0;
+    if (document.body.classList.contains("cover-is-closed")) return;
+    const threshold = Math.max(0, experience.nextPageHideAfterScrollPixels ?? 24);
+    for (const { page, link } of pagePrompts) {
+      if (link.inert || page.getBoundingClientRect().top >= -threshold) continue;
+      link.classList.add("is-dismissed");
+      link.inert = true;
+      link.setAttribute("aria-hidden", "true");
+    }
+  };
+  window.addEventListener("scroll", () => {
+    if (!promptScrollFrame) promptScrollFrame = requestAnimationFrame(hideScrolledPrompts);
+  }, { passive: true });
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let entranceObserver;
