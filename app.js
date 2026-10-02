@@ -69,6 +69,72 @@
     return values.map((part) => part.value).join("");
   };
 
+  const renderCover = (section) => {
+    const cover = document.createElement("section");
+    cover.id = "cover";
+    cover.className = "cover-page";
+    cover.classList.toggle("has-seal-pulse", section.sealPulse?.enabled === true);
+    cover.style.setProperty("--seal-pulse-duration", `${Math.max(1.5, section.sealPulse?.durationSeconds || 3.2)}s`);
+    cover.style.setProperty("--seal-pulse-scale", Math.max(1, Math.min(1.06, section.sealPulse?.scale || 1.025)));
+    cover.setAttribute("aria-labelledby", "cover-heading");
+    cover.style.setProperty("--cover-image-position", section.backgroundPosition || "center bottom");
+    cover.style.setProperty("--cover-top-padding", section.layout?.topPadding || "12svh");
+    cover.style.setProperty("--cover-logo-size", section.layout?.logoSize || "140px");
+    cover.style.setProperty("--cover-hashtag-size", section.layout?.hashtagSize || "26px");
+    cover.style.setProperty("--cover-hashtag-font", section.hashtagFont || "Georgia, serif");
+    cover.style.setProperty("--cover-hashtag-style", section.hashtagFontStyle || "italic");
+    cover.style.setProperty("--feather-landing-angle", `${section.featherFlight?.landingAngle ?? 35}deg`);
+    cover.style.setProperty("--feather-landing-scale", Math.max(0.4, Math.min(1.5, section.featherFlight?.landingScale ?? 1)));
+    cover.style.setProperty("--cover-seal-size", section.layout?.sealSize || "84px");
+    cover.style.setProperty("--cover-seal-logo-scale", section.layout?.sealLogoScale ?? 1.22);
+    cover.style.setProperty("--cover-seal-bottom", section.layout?.sealBottom || "5svh");
+    cover.style.setProperty("--cover-opening-duration", `${section.openingDurationMilliseconds || 850}ms`);
+    root.style.setProperty("--cover-opening-duration", `${section.openingDurationMilliseconds || 850}ms`);
+    const artwork = document.createElement("img");
+    artwork.className = "cover-artwork";
+    artwork.src = section.background;
+    artwork.alt = section.imageAlt || "";
+    artwork.fetchPriority = "high";
+    const content = document.createElement("div");
+    content.className = "cover-content";
+    const heading = text("h1", "visually-hidden", section.heading);
+    heading.id = "cover-heading";
+    const logo = document.createElement("img");
+    logo.className = "cover-monogram";
+    logo.src = section.logo;
+    logo.alt = section.logoAlt || "";
+    content.append(heading, logo, text("p", "cover-hashtag", section.hashtag));
+    const seal = document.createElement("button");
+    seal.className = "cover-seal";
+    seal.type = "button";
+    seal.disabled = true;
+    seal.setAttribute("aria-label", section.openLabel);
+    const feather = document.createElement("img");
+    feather.className = "cover-feather";
+    feather.src = section.feather;
+    feather.alt = "";
+    const sealLogo = document.createElement("img");
+    sealLogo.className = "cover-seal-logo";
+    sealLogo.src = section.sealLogo || section.logo;
+    sealLogo.alt = "";
+    seal.append(sealLogo, feather);
+    const hint = text("p", "cover-hint", section.waitingHint || section.hint);
+    hint.id = "cover-opening-hint";
+    hint.setAttribute("role", "status");
+    seal.setAttribute("aria-describedby", hint.id);
+    cover.append(artwork);
+    if (section.envelopeFolds) {
+      const folds = document.createElement("div");
+      folds.className = "cover-folds";
+      folds.setAttribute("aria-hidden", "true");
+      folds.append(text("span", "cover-fold cover-fold-left", ""),
+        text("span", "cover-fold cover-fold-right", ""), text("span", "cover-fold cover-fold-bottom", ""));
+      cover.append(folds);
+    }
+    cover.append(content, seal, hint);
+    return cover;
+  };
+
   const renderInvitation = (section) => {
     const page = document.createElement("section");
     page.id = "welcome";
@@ -159,6 +225,17 @@
       );
     }
     content.append(monogram);
+    if (section.hashtag?.enabled) {
+      const coverSettings = config.sections.cover || {};
+      const hashtag = text("p", "save-date-hashtag", section.hashtag.text ?? coverSettings.hashtag);
+      hashtag.style.setProperty("--hashtag-font", section.hashtag.font ?? coverSettings.hashtagFont ?? "Georgia, serif");
+      hashtag.style.setProperty("--hashtag-style", section.hashtag.style ?? coverSettings.hashtagFontStyle ?? "italic");
+      hashtag.style.setProperty("--hashtag-size", section.hashtag.size ?? coverSettings.layout?.hashtagSize ?? "20px");
+      hashtag.style.setProperty("--hashtag-gap-above", section.hashtag.gapAbove || "4px");
+      hashtag.style.setProperty("--hashtag-gap-below", section.hashtag.gapBelow || "20px");
+      page.classList.add("has-hashtag");
+      content.append(hashtag);
+    }
     const instructions = text("h2", "visually-hidden", section.scratch.heading);
     instructions.id = "save-date-heading";
     content.append(instructions);
@@ -521,7 +598,7 @@
     return page;
   };
 
-  const renderers = { invitation: renderInvitation, saveTheDate: renderSaveTheDate, events: renderEvents };
+  const renderers = { cover: renderCover, invitation: renderInvitation, saveTheDate: renderSaveTheDate, events: renderEvents };
   for (const key of config.sectionOrder) {
     const section = config.sections[key];
     if (section?.enabled && renderers[key]) {
@@ -574,6 +651,11 @@
     });
   }
 
+  const mountMotionLayer = (layer, settings) => {
+    const sections = settings.sections || ["invitation", "saveTheDate"];
+    pages.filter((page) => sections.includes(page.dataset.section))
+      .forEach((page) => page.append(layer.cloneNode(true)));
+  };
   const petalSettings = experience.petals;
   if (petalSettings?.enabled && petalSettings.colours?.length) {
     const layer = document.createElement("div");
@@ -595,7 +677,7 @@
       petal.style.left = `${3 + index * 91 / Math.max(1, count - 1)}%`;
       layer.append(petal);
     }
-    document.body.append(layer);
+    mountMotionLayer(layer, petalSettings);
   }
   const birdSettings = experience.birds;
   if (birdSettings?.enabled) {
@@ -630,7 +712,7 @@
       bird.append(silhouette);
       layer.append(bird);
     }
-    document.body.append(layer);
+    mountMotionLayer(layer, birdSettings);
   }
   const updateMotion = () => {
     document.body.classList.toggle("motion-paused", document.hidden);
@@ -642,4 +724,107 @@
   document.addEventListener("visibilitychange", updateMotion);
   reducedMotion.addEventListener("change", updateMotion);
   updateMotion();
+
+  const cover = root.querySelector(".cover-page");
+  if (cover) {
+    const showCover = pages.length > 0 && (!location.hash || location.hash === "#cover");
+    cover.hidden = !showCover;
+    if (showCover) {
+      document.body.classList.add("cover-is-closed");
+      pages.forEach((page) => {
+        page.inert = true;
+        page.setAttribute("aria-hidden", "true");
+      });
+      let opening = false;
+      let landed = false;
+      let landingAnimation;
+      const seal = cover.querySelector(".cover-seal");
+      const feather = cover.querySelector(".cover-feather");
+      const finishLanding = () => {
+        if (opening || cover.hidden || landed) return;
+        landed = true;
+        cover.classList.add("feather-has-landed");
+        seal.disabled = false;
+        cover.querySelector(".cover-hint").textContent = config.sections.cover.hint || "";
+      };
+      const landFeather = async () => {
+        await Promise.allSettled([feather.decode(), cover.querySelector(".cover-artwork").decode()]);
+        if (opening || cover.hidden || landed) return;
+        if (reducedMotion.matches || !feather.animate) {
+          finishLanding();
+          return;
+        }
+        cover.classList.add("feather-is-arriving");
+        const height = cover.clientHeight;
+        const width = cover.clientWidth;
+        const flight = config.sections.cover.featherFlight;
+        const startScale = Math.max(1, Math.min(4, flight.startScale ?? 2.7));
+        const landingScale = Number(cover.style.getPropertyValue("--feather-landing-scale"));
+        const angle = flight.landingAngle ?? 35;
+        const pose = (x, y, rotation, scale = 1) =>
+          `translate(${width * x}px, ${height * y}px) rotate(${rotation}deg) scale(${scale})`;
+        const curves = flight.path;
+        const frames = Array.from({ length: 91 }, (_, index) => {
+          const progress = index / 90;
+          const segment = Math.min(curves.length - 1, Math.floor(progress * curves.length));
+          const t = progress * curves.length - segment;
+          const [a, b, c, d] = curves[segment];
+          const coordinate = (axis) => (1 - t) ** 3 * a[axis]
+            + 3 * (1 - t) ** 2 * t * b[axis] + 3 * (1 - t) * t ** 2 * c[axis] + t ** 3 * d[axis];
+          return {
+            transform: pose(coordinate(0), coordinate(1), -20 + (angle + 20) * progress
+              + Math.sin(progress * Math.PI * 2) * 18, startScale + (landingScale - startScale) * progress),
+            opacity: Math.min(1, progress * 12),
+            offset: progress,
+          };
+        });
+        landingAnimation = feather.animate(frames, {
+          duration: Math.max(0, Math.min(8000, config.sections.cover.featherLandingMilliseconds ?? 3600)),
+          easing: "ease-in-out",
+          fill: "both",
+        });
+        await landingAnimation.finished.catch(() => {});
+        finishLanding();
+        landingAnimation.cancel();
+      };
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) {
+          landingAnimation?.cancel();
+          finishLanding();
+        }
+      });
+      landFeather();
+      const openCover = async (immediate = false, destination = pages[0]) => {
+        if (opening || cover.hidden || (!immediate && !landed)) return;
+        opening = true;
+        landingAnimation?.cancel();
+        seal.disabled = true;
+        cover.classList.add("is-opening");
+        document.body.classList.add("cover-is-opening");
+        const duration = Math.max(0, Math.min(1500, config.sections.cover.openingDurationMilliseconds || 850));
+        if (!immediate && !reducedMotion.matches && cover.animate) {
+          const fade = cover.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "forwards",
+          });
+          await fade.finished.catch(() => {});
+        }
+        cover.hidden = true;
+        document.body.classList.remove("cover-is-closed");
+        document.body.classList.remove("cover-is-opening");
+        pages.forEach((page) => {
+          page.inert = false;
+          page.removeAttribute("aria-hidden");
+        });
+        destination.scrollIntoView({ behavior: "instant", block: "start" });
+        destination.tabIndex = -1;
+        destination.focus({ preventScroll: true });
+        history.replaceState(null, "", `#${destination.id}`);
+      };
+      seal.addEventListener("click", () => openCover());
+      window.addEventListener("hashchange", () => {
+        const destination = pages.find((page) => `#${page.id}` === location.hash);
+        if (destination) openCover(true, destination);
+      });
+    }
+  }
 })();

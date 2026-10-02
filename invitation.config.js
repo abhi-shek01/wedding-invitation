@@ -29,6 +29,7 @@ window.INVITATION_CONFIG = {
     nextPageLabel: "Reveal our date",
     petals: {
       enabled: true,
+      sections: ["invitation", "saveTheDate"],
       count: 20,
       colours: ["#d6ab93", "#c6ab76", "#a6ac91"],
       deepColours: ["#a75f51", "#967443", "#687557"],
@@ -38,14 +39,59 @@ window.INVITATION_CONFIG = {
     },
     birds: {
       enabled: true,
+      sections: ["invitation", "saveTheDate"],
       count: 4,
       colour: "#826d54",
       opacity: 0.65,
       durationSeconds: 18,
     },
   },
-  sectionOrder: ["invitation", "saveTheDate", "events"],
+  sectionOrder: ["cover", "invitation", "saveTheDate", "events"],
   sections: {
+    cover: {
+      enabled: true,
+      heading: "Our wedding invitation",
+      background: "assets/radha-krishna-cover.png",
+      imageAlt: "Radha and Krishna standing affectionately together beneath a floral arch",
+      backgroundPosition: "center bottom",
+      logo: "assets/tr-monogram-refined.png",
+      logoAlt: "T R wedding monogram",
+      hashtag: "#foreverRoShar",
+      hashtagFont: "Georgia, 'Times New Roman', serif",
+      hashtagFontStyle: "italic",
+      openLabel: "Tap the peacock feather to open our invitation",
+      hint: "Tap the feather to open",
+      waitingHint: "A little magic is on its way…",
+      sealLogo: "assets/tr-monogram-refined.png",
+      sealPulse: {
+        enabled: true,
+        durationSeconds: 3.2,
+        scale: 1.025,
+      },
+      feather: "assets/peacock-feather-client.png",
+      featherLandingMilliseconds: 4800,
+      featherFlight: {
+        startScale: 2.7,
+        landingScale: 0.78,
+        landingAngle: 35,
+        // Cubic curves: offsets from the seal in fractions of cover width/height.
+        path: [
+          [[0.33, -0.58], [0.15, -0.62], [-0.4, -0.52], [-0.23, -0.35]],
+          [[-0.23, -0.35], [-0.15, -0.18], [0.38, -0.25], [0.2, -0.16]],
+          [[0.2, -0.16], [0.16, -0.07], [-0.02, -0.04], [0, 0]],
+        ],
+      },
+      envelopeFolds: true,
+      openingDurationMilliseconds: 850,
+      layout: {
+        topPadding: "1.5svh",
+        logoSize: "clamp(112px, 16svh, 152px)",
+        hashtagSize: "clamp(17px, 2.3svh, 22px)",
+        sealSize: "clamp(72px, 10svh, 94px)",
+        sealLogoScale: 1.22,
+        sealBottom: "5svh",
+      },
+    },
     invitation: {
       enabled: true,
       nextPageBottom: "56px",
@@ -74,6 +120,14 @@ window.INVITATION_CONFIG = {
     },
     saveTheDate: {
       enabled: true,
+      // Uses the cover's hashtag, font and size unless overridden here.
+      hashtag: {
+        enabled: true,
+        style: "italic",
+        size: "clamp(16px, 4cqi, 19px)",
+        gapAbove: "4px",
+        gapBelow: "clamp(18px, 5cqi, 26px)",
+      },
       nextPageLabel: "Explore the celebrations",
       background: "assets/save-the-date-background.png",
       backgroundPosition: "center center",
