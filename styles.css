@@ -186,6 +186,15 @@ p, h1, h2 { margin: 0; }
   .parents { font-size: 13px; }
   .grandparents { font-size: 13px; }
 }
+@container (max-width: 480px) {
+  #welcome { padding-top: 24px; }
+  #welcome .ganeshji { margin-bottom: 8px; }
+  #welcome .ornament { margin-block: 14px 17px; }
+  #welcome .introduction { margin-bottom: 18px; }
+  #welcome .person-name { margin-bottom: 6px; }
+  #welcome .connector { margin-block: 12px 6px; }
+  #welcome .couple + .ornament { margin-block: 18px 0; }
+}
 .save-date-page {
   padding: var(--save-date-top-padding, 110px) clamp(24px, 8cqi, 48px) 180px;
 }
@@ -248,6 +257,10 @@ p, h1, h2 { margin: 0; }
 .scratch-cover { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; transition: opacity 650ms ease; }
 .scratch-cover:active { cursor: grabbing; }
 .is-revealed .scratch-cover { opacity: 0; }
+.reveal-celebration { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.celebration-piece { position: absolute; width: var(--celebration-size); height: calc(var(--celebration-size) * 1.25); border-radius: 65% 45% 70% 30%; background: radial-gradient(ellipse at 30% 25%, color-mix(in srgb, var(--celebration-colour) 65%, white), var(--celebration-colour) 75%); box-shadow: inset -1px -1px 2px rgb(121 62 60 / 0.12); pointer-events: none; }
+.celebration-piece.is-soft-petal { border-radius: 40% 70% 35% 70%; }
+.celebration-piece.is-glint { width: 3px; height: 3px; border-radius: 50%; background: #b99764; box-shadow: 0 0 5px #e7cf9d; }
 .canvas-unavailable { background: #e6d3aa; }
 .reveal-button {
   font: 14px/1.4 var(--body-font);
@@ -307,6 +320,7 @@ p, h1, h2 { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   .scratch-cover { transition: none; }
   .countdown { animation: none; }
+  .reveal-celebration { display: none; }
 }
 
 /* A narrow paper fade blends the artwork where neighbouring pages meet. */
@@ -361,24 +375,26 @@ p, h1, h2 { margin: 0; }
 .bird {
   position: absolute;
   left: -48px;
-  width: 28px;
-  height: 18px;
+  width: 32px;
+  height: 20px;
   color: var(--bird-colour);
   opacity: 0;
   animation: bird-flight var(--bird-duration) linear var(--bird-delay) infinite;
 }
 .bird-reverse { animation-direction: reverse; }
 .bird svg { width: 100%; height: 100%; fill: currentColor; }
-.bird-wing { transform-box: view-box; transform-origin: 50% 68%; animation: wing-beat 850ms ease-in-out infinite alternate; }
-.bird-wing-right { animation-direction: alternate-reverse; }
+.bird-wing { transform-box: view-box; transform-origin: 50% 75%; animation: wing-beat var(--wing-duration, 650ms) ease-in-out infinite; }
 @keyframes bird-flight {
   0%, 8% { transform: translate3d(0, 0, 0); opacity: 0; }
-  16%, 66% { opacity: var(--bird-opacity); }
-  74%, 100% { transform: translate3d(calc(100cqw + 96px), var(--bird-rise), 0); opacity: 0; }
+  16% { transform: translate3d(calc(12cqw + 24px), calc(var(--bird-rise) * 0.35), 0) rotate(var(--bird-bank)); opacity: var(--bird-opacity); }
+  30% { transform: translate3d(calc(32cqw + 35px), var(--bird-rise), 0) rotate(calc(var(--bird-bank) * -1)); opacity: var(--bird-opacity); }
+  46% { transform: translate3d(calc(52cqw + 48px), var(--bird-dip), 0) rotate(var(--bird-bank)); opacity: var(--bird-opacity); }
+  60% { transform: translate3d(calc(78cqw + 70px), calc(var(--bird-rise) * 0.35), 0) rotate(calc(var(--bird-bank) * -1)); opacity: var(--bird-opacity); }
+  76%, 100% { transform: translate3d(calc(100cqw + 96px), calc(var(--bird-dip) * 0.5), 0); opacity: 0; }
 }
 @keyframes wing-beat {
-  from { transform: scaleY(0.55) rotate(-8deg); }
-  to { transform: scaleY(1) rotate(8deg); }
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(-0.65); }
 }
 .petal {
   position: absolute;

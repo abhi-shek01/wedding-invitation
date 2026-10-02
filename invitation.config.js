@@ -40,8 +40,8 @@ window.INVITATION_CONFIG = {
       enabled: true,
       count: 4,
       colour: "#826d54",
-      opacity: 0.55,
-      durationSeconds: 24,
+      opacity: 0.65,
+      durationSeconds: 18,
     },
   },
   sectionOrder: ["invitation", "saveTheDate", "events"],
@@ -120,6 +120,12 @@ window.INVITATION_CONFIG = {
         footer: "Until our forever begins",
         completeMessage: "Our special day is here!",
       },
+      celebration: {
+        enabled: true,
+        count: 36,
+        durationMilliseconds: 4200,
+        colours: ["#c17c82", "#e2b0a0", "#cf9187", "#f0d1bd"],
+      },
     },
     events: {
       enabled: true,
@@ -148,7 +154,7 @@ window.INVITATION_CONFIG = {
         radhe: {
           name: "Radhe Palace Hotel",
           address: "882, Lake Town Road, Block A, Lake Town, South Dumdum, West Bengal 700089",
-          mapUrl: "https://maps.app.goo.gl/qaEqoxrkQtFkRJ3b6",
+          mapUrl: "https://maps.app.goo.gl/WfWGf5iBt5UEnim66",
         },
         swastik: {
           name: "Swastik Banquets",
@@ -158,7 +164,7 @@ window.INVITATION_CONFIG = {
         wedding: {
           name: "12, Hungerford Street",
           address: "Mullick Bazar, Park Street area, Kolkata, West Bengal 700017",
-          mapUrl: "https://maps.app.goo.gl/F7VKNuVN3B2NFGux5",
+          mapUrl: "https://maps.app.goo.gl/jrHQdyr3SJ93KFRVA",
         },
       },
       // Purvi's illustrations are temporary artwork until the client pictures arrive.

@@ -205,6 +205,44 @@
 
     let revealed = false;
     let timer;
+    const celebrate = () => {
+      const settings = section.celebration;
+      if (!settings?.enabled || !settings.colours?.length ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches || !Element.prototype.animate) return;
+      const layer = document.createElement("div");
+      layer.className = "reveal-celebration";
+      layer.setAttribute("aria-hidden", "true");
+      const pageRect = page.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const count = Math.min(80, Math.max(0, Math.round(settings.count || 36)));
+      const duration = Math.min(4500, Math.max(1000, settings.durationMilliseconds || 4200));
+      page.append(layer);
+      const animations = [];
+      for (let index = 0; index < count; index++) {
+        // Scatter the starting points for an airy shower rather than two piles.
+        const direction = index % 2 ? -1 : 1;
+        const drift = direction * (12 + index % 5 * 6);
+        const turn = direction * (35 + index % 5 * 18);
+        const piece = document.createElement("span");
+        piece.className = "celebration-piece";
+        piece.style.left = `${cardRect.left - pageRect.left + cardRect.width * (0.08 + ((index * 37) % 101) / 100 * 0.84)}px`;
+        piece.style.top = `${cardRect.top - pageRect.top - 58 + index % 4 * 12}px`;
+        piece.style.setProperty("--celebration-colour", settings.colours[index % settings.colours.length]);
+        piece.style.setProperty("--celebration-size", `${8 + index % 3 * 2}px`);
+        if (index % 6 === 0) piece.classList.add("is-glint");
+        else if (index % 3 === 0) piece.classList.add("is-soft-petal");
+        layer.append(piece);
+        const animation = piece.animate([
+          { transform: `translate(-50%, -50%) rotate(${-turn}deg) rotateY(15deg)`, opacity: 0, offset: 0 },
+          { transform: `translate(${drift * 0.3}px, 18px) rotate(${turn * 0.15}deg) rotateY(40deg)`, opacity: 0.9, offset: 0.15 },
+          { transform: `translate(${drift}px, 72px) rotate(${turn}deg) rotateY(-25deg)`, opacity: 0.9, offset: 0.48 },
+          { transform: `translate(${-drift * 0.3}px, 130px) rotate(${turn * 1.4}deg) rotateY(45deg)`, opacity: 0.7, offset: 0.78 },
+          { transform: `translate(${drift * 0.6}px, ${175 + index % 3 * 15}px) rotate(${turn * 1.7}deg) rotateY(-15deg)`, opacity: 0, offset: 1 },
+        ], { duration: duration + index % 4 * 110, delay: 180 + index % 8 * 70, easing: "linear", fill: "both" });
+        animations.push(animation.finished);
+      }
+      Promise.allSettled(animations).then(() => layer.remove());
+    };
     const tick = () => {
       const remaining = Math.max(0, target - Date.now());
       const parts = [Math.floor(remaining / 86400000), Math.floor(remaining / 3600000) % 24,
@@ -233,6 +271,7 @@
       revealButton.hidden = true;
       status.textContent = `${dateLabel}, ${section.wedding.location}. The countdown has begun.`;
       if (tick() > 0) timer = setInterval(tick, 1000);
+      celebrate();
     };
     revealButton.addEventListener("click", reveal);
 
@@ -573,7 +612,10 @@
       bird.style.top = `${15 + index * 13}%`;
       bird.style.setProperty("--bird-duration", `${birdSettings.durationSeconds + index * 3}s`);
       bird.style.setProperty("--bird-delay", `${-(index * 8 + 4)}s`);
-      bird.style.setProperty("--bird-rise", `${index % 2 ? 25 : -35}px`);
+      bird.style.setProperty("--bird-rise", `${index % 2 ? 65 + index * 8 : -75 - index * 8}px`);
+      bird.style.setProperty("--bird-dip", `${index % 2 ? -60 - index * 6 : 45 + index * 6}px`);
+      bird.style.setProperty("--bird-bank", `${index % 2 ? -10 : 10}deg`);
+      bird.style.setProperty("--wing-duration", `${600 + index % 3 * 90}ms`);
       const silhouette = document.createElementNS(svgNamespace, "svg");
       silhouette.setAttribute("viewBox", "0 0 48 28");
       for (const [side, shape] of [["left", "M24 18 Q12 3 2 8 Q14 9 24 21Z"], ["right", "M24 18 Q36 3 46 8 Q34 9 24 21Z"]]) {
@@ -582,6 +624,9 @@
         wing.setAttribute("class", `bird-wing bird-wing-${side}`);
         silhouette.append(wing);
       }
+      const body = document.createElementNS(svgNamespace, "path");
+      body.setAttribute("d", "M24 14 C21 16 22 21 24 24 L21 27 L24 26 L27 27 L24 24 C26 21 27 16 24 14Z");
+      silhouette.append(body);
       bird.append(silhouette);
       layer.append(bird);
     }
