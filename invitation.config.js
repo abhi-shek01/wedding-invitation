@@ -186,7 +186,7 @@ window.INVITATION_CONFIG = {
           imageAlt: "Traditional wedding celebration illustration",
         },
         sangeet: {
-          title: "Sitaron Ke Sang, Shaam-e-Sangeet",
+          title: "Shaam-e-Sangeet",
           ceremony: "Sangeet",
           dateTime: "2026-11-20T18:00:00+05:30",
           onwards: true,
@@ -195,7 +195,7 @@ window.INVITATION_CONFIG = {
           imageAlt: "Illustrated couple dancing beneath a floral canopy",
         },
         haldi: {
-          title: "Kesariya Banno",
+          title: "Rang Chada Haldi Ka",
           ceremony: "Haldi",
           dateTime: "2026-11-21T09:00:00+05:30",
           venue: "radhe",
@@ -203,7 +203,7 @@ window.INVITATION_CONFIG = {
           imageAlt: "Illustrated couple against yellow marigolds",
         },
         baraat: {
-          title: "Banna Re Banna, Chali Baraat",
+          title: "Band Baja Baraat",
           ceremony: "Baraat",
           dateTime: "2026-11-21T19:00:00+05:30",
           venue: "wedding",
