@@ -9,6 +9,9 @@ const types = {
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".webp": "image/webp",
   ".woff2": "font/woff2",
 };
 
@@ -28,7 +31,7 @@ http.createServer((request, response) => {
   const file = path.resolve(root, relative);
   // Serve only public invitation files, never repository or configuration tooling.
   const publicFile = ["index.html", "styles.css", "app.js", "invitation.config.js"].includes(relative)
-    || (relative.startsWith("assets/") && [".png", ".woff2"].includes(path.extname(file)));
+    || (relative.startsWith("assets/") && [".png", ".jpg", ".jpeg", ".webp", ".woff2"].includes(path.extname(file)));
   if (!file.startsWith(root + path.sep) || !publicFile) {
     response.writeHead(404).end("Not found");
     return;

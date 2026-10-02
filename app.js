@@ -51,6 +51,24 @@
     return divider;
   };
 
+  const formatDate = (date, locale, timeZone, ordinalDay = true, format = {}) => {
+    const parts = new Intl.DateTimeFormat(locale, {
+      day: "numeric", month: format.month || "long", year: "numeric", timeZone,
+    }).formatToParts(date);
+    const rules = new Intl.PluralRules(locale, { type: "ordinal" });
+    const suffixes = { one: "st", two: "nd", few: "rd", other: "th" };
+    const values = parts.map((part) => ({
+      ...part,
+      value: part.type === "day" && ordinalDay && locale.startsWith("en")
+        ? part.value + suffixes[rules.select(Number(part.value))] : part.value,
+    }));
+    if (format.commaBeforeYear) {
+      const value = (type) => values.find((part) => part.type === type).value;
+      return `${value("day")} ${value("month")}, ${value("year")}`;
+    }
+    return values.map((part) => part.value).join("");
+  };
+
   const renderInvitation = (section) => {
     const page = document.createElement("section");
     page.id = "welcome";
@@ -150,15 +168,7 @@
     dateReveal.className = "date-reveal";
     dateReveal.setAttribute("aria-hidden", "true");
     const target = Date.parse(section.wedding.dateTime);
-    const dateParts = new Intl.DateTimeFormat(section.wedding.locale, {
-      day: "numeric", month: "long", year: "numeric", timeZone: section.wedding.timeZone,
-    }).formatToParts(new Date(target));
-    const ordinalRules = new Intl.PluralRules(section.wedding.locale, { type: "ordinal" });
-    const ordinalSuffixes = { one: "st", two: "nd", few: "rd", other: "th" };
-    const dateLabel = dateParts.map((part) => {
-      if (part.type !== "day" || !section.wedding.ordinalDay || !section.wedding.locale.startsWith("en")) return part.value;
-      return part.value + ordinalSuffixes[ordinalRules.select(Number(part.value))];
-    }).join("");
+    const dateLabel = formatDate(new Date(target), section.wedding.locale, section.wedding.timeZone, section.wedding.ordinalDay);
     dateReveal.append(text("p", "date-label", section.wedding.label),
       text("p", "wedding-date", dateLabel), text("p", "date-location", section.wedding.location));
     const canvas = document.createElement("canvas");
@@ -331,19 +341,168 @@
     return page;
   };
 
-  const renderers = { invitation: renderInvitation, saveTheDate: renderSaveTheDate };
+  const renderEvents = (section) => {
+    const icon = (kind) => {
+      const namespace = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(namespace, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "1.5");
+      svg.setAttribute("stroke-linecap", "round");
+      svg.setAttribute("stroke-linejoin", "round");
+      svg.setAttribute("aria-hidden", "true");
+      const path = document.createElementNS(namespace, "path");
+      path.setAttribute("d", {
+        calendar: "M7 3v4m10-4v4M4 10h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z",
+        clock: "M12 8v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+        directions: "m12 2 10 10-10 10L2 12 10 2Zm-5 12v-4h9m-3-3 3 3-3 3",
+      }[kind]);
+      svg.append(path);
+      return svg;
+    };
+    const page = document.createElement("section");
+    page.id = "events";
+    page.className = "invitation-page events-page";
+    page.setAttribute("aria-labelledby", "events-heading");
+    for (const [key, property] of Object.entries(themeProperties)) {
+      if (section[key] !== undefined) page.style.setProperty(property, section[key]);
+    }
+    const backdrop = document.createElement("div");
+    backdrop.className = "events-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+    const background = document.createElement("img");
+    background.className = "invitation-background";
+    background.src = section.background;
+    background.alt = "";
+    background.loading = "lazy";
+    backdrop.append(background);
+    page.append(backdrop);
+
+    const content = document.createElement("div");
+    content.className = "events-content";
+    const header = document.createElement("header");
+    header.className = "events-header";
+    const heading = text("h2", "events-heading", section.heading);
+    heading.id = "events-heading";
+    header.append(heading, ornament());
+    if (section.timeNote) header.append(text("p", "events-time-note", section.timeNote));
+    content.append(header);
+    const clock = new Intl.DateTimeFormat(section.locale, {
+      hour: "numeric", minute: "2-digit", hour12: true, timeZone: section.timeZone,
+    });
+    const cards = document.createElement("div");
+    cards.className = "event-list";
+    content.append(cards);
+    section.eventOrder.forEach((key) => {
+      const event = section.items[key];
+      if (!event || event.enabled === false) return;
+      const venue = section.venues[event.venue];
+      const start = new Date(event.dateTime);
+      const dateLabel = formatDate(start, section.locale, section.timeZone, true, section.dateFormat);
+      const card = document.createElement("article");
+      card.className = "event-card";
+      card.dataset.event = key;
+      card.setAttribute("aria-labelledby", `event-${key}-title`);
+      const visual = document.createElement("div");
+      visual.className = "event-visual";
+      if (event.image) {
+        const frame = document.createElement("div");
+        frame.className = "event-image-frame";
+        const picture = document.createElement("img");
+        picture.src = event.image;
+        picture.alt = event.imageAlt || "";
+        picture.width = 1080;
+        picture.height = 1350;
+        picture.loading = "lazy";
+        picture.decoding = "async";
+        picture.style.objectPosition = event.imagePosition || "center 65%";
+        picture.style.objectFit = event.imageFit || "cover";
+        frame.append(picture);
+        visual.append(frame);
+      }
+      const details = document.createElement("div");
+      details.className = "event-details";
+      const top = document.createElement("div");
+      top.className = "event-top";
+      const title = text("h3", "event-title", event.title);
+      if (event.title.length > 28) title.classList.add("event-title-long");
+      title.id = `event-${key}-title`;
+      const description = document.createElement("div");
+      description.className = "event-description";
+      description.append(title);
+      const schedule = document.createElement("div");
+      schedule.className = "event-schedule";
+      const dateRow = document.createElement("div");
+      dateRow.className = "event-schedule-row";
+      const date = text("time", "event-date", dateLabel);
+      date.dateTime = event.dateTime;
+      dateRow.append(icon("calendar"), date);
+      const timeRow = document.createElement("div");
+      timeRow.className = "event-schedule-row";
+      const time = text("time", "event-time", clock.format(start).toUpperCase().replace(":00", "") + (event.onwards ? ` ${section.onwardsLabel}` : ""));
+      time.dateTime = event.dateTime;
+      timeRow.append(icon("clock"), time);
+      schedule.append(dateRow, timeRow);
+      top.append(description, schedule);
+      details.append(top);
+      if (venue) {
+        const location = document.createElement("div");
+        location.className = "event-location-row";
+        const address = document.createElement("div");
+        address.className = "event-address-bar";
+        address.append(text("p", "event-venue", venue.name), text("p", "event-address", venue.address));
+        location.append(address);
+        try {
+          const mapUrl = new URL(venue.mapUrl);
+          if (["https:", "http:"].includes(mapUrl.protocol)) {
+            const link = document.createElement("a");
+            link.className = "event-map-link";
+            link.href = mapUrl.href;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.setAttribute("aria-label", `${section.mapLabel}: ${venue.name}, ${event.ceremony}`);
+            link.append(icon("directions"), text("span", "", section.mapLabel));
+            location.append(link);
+          }
+        } catch { /* Invalid optional map links are omitted. */ }
+        details.append(location);
+      }
+      card.append(visual, details);
+      cards.append(card);
+    });
+    const previous = config.sectionOrder.slice(0, config.sectionOrder.indexOf("events")).reverse()
+      .find((key) => config.sections[key]?.enabled && ["invitation", "saveTheDate"].includes(key));
+    if (previous && section.backLinkLabel) {
+      const link = text("a", "events-back-link", section.backLinkLabel);
+      link.href = previous === "saveTheDate" ? "#save-the-date" : "#welcome";
+      content.append(ornament(), link);
+    }
+    page.append(content);
+    return page;
+  };
+
+  const renderers = { invitation: renderInvitation, saveTheDate: renderSaveTheDate, events: renderEvents };
   for (const key of config.sectionOrder) {
     const section = config.sections[key];
-    if (section?.enabled && renderers[key]) root.append(renderers[key](section));
+    if (section?.enabled && renderers[key]) {
+      const page = renderers[key](section);
+      page.dataset.section = key;
+      root.append(page);
+    }
   }
 
   const pages = [...root.querySelectorAll(".invitation-page")];
   pages.forEach((page, index) => {
     const next = pages[index + 1];
-    if (!next || !experience.nextPageLabel) return;
-    const link = text("a", "next-page-link", experience.nextPageLabel);
+    const key = page.dataset.section;
+    const label = config.sections[key]?.nextPageLabel ?? experience.nextPageLabel;
+    if (!next || !label) return;
+    const link = text("a", "next-page-link", label);
+    link.style.setProperty("--next-page-bottom", config.sections[key]?.nextPageBottom || "26px");
     link.href = `#${next.id}`;
     link.append(text("span", "next-page-arrow", "↓"));
+    page.classList.add("has-next-page");
     page.append(link);
     link.addEventListener("click", (event) => {
       // Native anchor navigation retains the section URL and keyboard access.
@@ -362,13 +521,17 @@
         entry.target.classList.add("is-visible");
         entranceObserver.unobserve(entry.target);
       });
-    }, { threshold: 0.08 });
+    }, { threshold: 0.02 });
     pages.forEach((page) => {
       page.classList.add("motion-ready");
-      const content = page.querySelector(".invitation-content, .save-date-content");
+      const content = page.querySelector(".invitation-content, .save-date-content, .events-content");
       [...content.children].filter((child) => !child.classList.contains("visually-hidden") && !child.hidden)
         .forEach((child, index) => child.style.setProperty("--arrival-delay", `${index * 85}ms`));
       entranceObserver.observe(page);
+    });
+    root.querySelectorAll(".event-card").forEach((element) => {
+      element.classList.add("motion-ready");
+      entranceObserver.observe(element);
     });
   }
 
@@ -428,7 +591,7 @@
     document.body.classList.toggle("motion-paused", document.hidden);
     if (reducedMotion.matches) {
       entranceObserver?.disconnect();
-      pages.forEach((page) => page.classList.add("is-visible"));
+      root.querySelectorAll(".motion-ready").forEach((element) => element.classList.add("is-visible"));
     }
   };
   document.addEventListener("visibilitychange", updateMotion);
