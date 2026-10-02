@@ -1,6 +1,6 @@
-# Swapnil & Ritu — Wedding Invitation
+# Roli & Tushar — Wedding Invitation
 
-The first invitation page uses a recreated version of Purvi's palace background in the ivory, peach, champagne, and muted olive watercolour style of the supplied next-page floral image. Ganeshji appears at the top, followed by “ॐ गणेशाय नमः” and Swapnil and Ritu's family details from the reference screenshot.
+The first invitation page uses a recreated version of Purvi's palace background in the ivory, peach, champagne, and muted olive watercolour style of the supplied next-page floral image. Ganeshji appears at the top, followed by “ॐ गणेशाय नमः” and Roli and Tushar's family details.
 
 ## Preview
 
