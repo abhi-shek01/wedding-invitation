@@ -1,6 +1,8 @@
 # Roli & Tushar — Wedding Invitation
 
-The first invitation page uses a Prinsep Ghat riverside watercolour background in ivory, peach, champagne and muted sage to match the other Kolkata pages. Flowers frame the edges, with the pavilion and a wooden boat near the bottom and an open ivory centre for the text. Ganeshji appears at the top, followed by “ॐ गणेशाय नमः” and Roli and Tushar's family details.
+The website has three pages: the welcome invitation, a scratch-to-reveal save the date with a countdown, and the celebrations schedule.
+
+The first invitation page uses a Prinsep Ghat riverside watercolour background in ivory, peach, champagne and muted sage to match the other Kolkata pages. Flowers frame the edges, with the pavilion and a wooden boat near the bottom and an open ivory centre for the text. Ganeshji appears at the top, followed by “॥ ॐ श्री गणेशाय नमः ॥” and Roli and Tushar's family details, with the bride listed first.
 
 ## Preview
 
@@ -14,19 +16,18 @@ Edit **invitation.config.js** for all client content and theme settings:
 - `theme`: colours, fonts, background path, opacity, and entrance animation.
 - `theme.backgroundBlur` and `theme.whiteScreenOpacity`: background blur and the light white overlay. Use `"0px"` and `0` to remove them. Text and Ganeshji stay sharp.
 - `sectionOrder`: ordering of implemented website sections.
-- `experience`: shared page width, smooth scrolling, section entrance animations, the next-page link, and floating petal colours, count, opacity, and speed. Both pages share a portrait canvas on desktop and fill the available width on mobile. Petals ignore pointer input, pause in background tabs, and are hidden when reduced motion is preferred.
-- `experience.petals.deepColours` and `deepOpacity`: deeper petals mixed with the light palette. `experience.birds` controls the small birds flying across both pages. `sections.saveTheDate.monogram.floating` and `floatDurationSeconds` control the logo's gentle motion. All decorative motion respects reduced-motion preferences.
+- `experience`: shared page width, smooth scrolling, section entrance animations, the next-page link, and floating petal colours, count, opacity, and speed. All pages share a portrait canvas on desktop and fill the available width on mobile. Petals ignore pointer input, pause in background tabs, and are hidden when reduced motion is preferred.
+- `experience.petals.deepColours` and `deepOpacity`: deeper petals mixed with the light palette. `experience.birds` controls the small birds flying across all pages. `sections.saveTheDate.monogram.floating` and `floatDurationSeconds` control the logo's gentle motion. All decorative motion respects reduced-motion preferences.
 - `sections.saveTheDate.wedding.ordinalDay`: adds English date suffixes such as “21st”. On mobile, the revealed card and countdown sit above the landmarks, with the closing line placed at the bottom of the artwork.
 - `sections.invitation`: Ganeshji image, mantra, invitation wording, couple order, names, parents, and grandparents.
-
 - `sections.saveTheDate`: second-page background, monogram, headings, scratch-card settings, wedding date/time/timezone, and countdown labels. Set `monogram.image` to a local asset path to use the final logo.
 - `sections.saveTheDate.celebration`: enables a brief wedding petal shower when the date is revealed, and controls its particle count, duration and colours. Scratching and tapping trigger the same cascade of scattered blush and peach rose petals with a few champagne glints. It ignores pointer input, removes itself after finishing and respects reduced-motion preferences. Birds flap both wings together and follow varied rising and dipping paths in both directions.
 
-The second page keeps the Adele & Alven floral background fully visible without a page-wide wash or blur. A simple T R gold wreath logo sits beneath the floral curve, followed by a clear gap and a champagne scratch card revealing 21 November 2026, Kolkata. Logo size and spacing are adjustable in `sections.saveTheDate.layout`. The countdown appears and starts updating only after scratching or using the keyboard-accessible reveal button. Its target is midnight IST at the start of the wedding date, pending a ceremony time. Both pages can be reordered or hidden from the same configuration.
+The second page keeps the Adele & Alven floral background fully visible without a page-wide wash or blur. A simple T R gold wreath logo sits beneath the floral curve, followed by a clear gap and a champagne scratch card revealing 21 November 2026, Kolkata. Logo size and spacing are adjustable in `sections.saveTheDate.layout`. The countdown appears and starts updating only after scratching or using the keyboard-accessible reveal button. Its target is midnight IST at the start of the wedding date, pending a ceremony time. All pages can be reordered or hidden from the same configuration.
 
 The third page uses `sections.events`: `eventOrder` controls the six card positions, `items` holds each event's name, ceremony, date/time, image and optional image framing (`imageFit` / `imagePosition`), and `venues` holds reusable venue names, full addresses and map links. Each card uses rows on mobile and desktop: a full-width illustration first, followed by a single-line event title on the left with calendar/date and clock/time on the right. Common ceremony labels are omitted. Event titles use the same Great Vibes script font as the former labels. Cards have a narrower desktop width and shorter 4:3 image frames; image cropping defaults to cover at center 65% and can be adjusted per event through imageFit and imagePosition. The address and directions button remain side by side below; there is no add-to-calendar button. Cards have matching heights, and the directions button never creates a separate row. The smaller “Celebrations” heading has no timezone note unless `timeNote` is filled in. The background stays at a natural portrait scale as the longer schedule scrolls, and cards enter gently as they become visible.
 
-Sangeet is set to 6 PM onwards on 20 November 2026, interpreting the supplied “6m onwards” text. Baraat and Pheras use “Banna Re Banna, Chali Baraat” and “Saat Phere, Saat Vachan”; all titles remain editable. Venue addresses were checked against the supplied Google Maps destinations on 3 October 2026. The wedding destination is 12, Hungerford Street, Mullick Bazar, Park Street area, Kolkata 700017.
+Sangeet is set to 6 PM onwards on 20 November 2026, interpreting the supplied “6m onwards” text. The event titles are “Ek Shaam Shyam Ke Naam”, “Biro Bhaat Bharan Ne Aayo”, “Shaam-e-Sangeet”, “Rang Chada Haldi Ka”, “Band Baja Baraat” and “Saat Phere, Saat Vachan”; all titles remain editable. Venue addresses were checked against the supplied Google Maps destinations on 3 October 2026. The wedding destination is 12, Hungerford Street, Mullick Bazar, Park Street area, Kolkata 700017.
 
 Radhe Palace's map link was updated to `https://maps.app.goo.gl/WfWGf5iBt5UEnim66` and Hungerford Street's to `https://maps.app.goo.gl/jrHQdyr3SJ93KFRVA` as supplied by the client. Each venue's shared link applies to both of its event cards.
 
@@ -45,4 +46,4 @@ Images and fonts are stored in `assets/`, and their paths are controlled through
 - Fonts: Great Vibes and EB Garamond, downloaded from Google Fonts and served locally.
 - Ganeshji: generated gold invitation illustration; see `assets/ganeshji-prompt.txt` for the prompt.
 
-Family names were transcribed from the supplied screenshot and remain editable in the configuration.
+Family names were supplied by the client and remain editable in the configuration.
