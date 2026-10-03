@@ -5,6 +5,15 @@
   const root = document.getElementById("invitation");
   if (!config || !root) return;
 
+  const refreshShowsCover = config.experience?.coverOnRefresh
+    && config.sections.cover?.enabled && config.sectionOrder.includes("cover")
+    && performance.getEntriesByType("navigation")[0]?.type === "reload";
+  if (refreshShowsCover) {
+    history.scrollRestoration = "manual";
+    history.replaceState(history.state, "", location.pathname + location.search);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+
   const text = (tag, className, value) => {
     const element = document.createElement(tag);
     element.className = className;
@@ -201,9 +210,22 @@
     sealLogo.src = section.sealLogo || section.logo;
     sealLogo.alt = "";
     seal.append(sealLogo, feather);
-    const hint = text("p", "cover-hint", section.waitingHint || section.hint);
+    const hint = text("p", "cover-hint", "");
     hint.id = "cover-opening-hint";
     hint.setAttribute("role", "status");
+    const waitingHint = text("span", "cover-waiting-hint", section.waitingHint || section.hint);
+    const openCue = text("button", "cover-open-cue", "");
+    openCue.type = "button";
+    openCue.hidden = true;
+    openCue.disabled = true;
+    const envelopeIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    envelopeIcon.setAttribute("viewBox", "0 0 24 24");
+    envelopeIcon.setAttribute("aria-hidden", "true");
+    const envelopePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    envelopePath.setAttribute("d", "M3 6h18v12H3V6Zm0 0 9 7 9-7");
+    envelopeIcon.append(envelopePath);
+    openCue.append(envelopeIcon, text("span", "", section.hint || "Tap to open"));
+    hint.append(waitingHint, openCue);
     seal.setAttribute("aria-describedby", hint.id);
     cover.append(artwork);
     if (section.envelopeFolds) {
@@ -828,12 +850,16 @@
     const label = config.sections[key]?.nextPageLabel ?? experience.nextPageLabel;
     if (!next || !label) return;
     const link = text("a", "next-page-link", label);
+    link.classList.toggle("has-pulse", experience.nextPagePulse?.enabled === true);
+    link.style.setProperty("--next-page-colour", experience.nextPageColour || "#7b2d3c");
+    link.style.setProperty("--next-page-pulse-duration", `${Math.max(1.5, experience.nextPagePulse?.durationSeconds || 3.2)}s`);
+    link.style.setProperty("--next-page-pulse-scale", Math.max(1, Math.min(1.06, experience.nextPagePulse?.scale || 1.035)));
     link.style.setProperty("--next-page-bottom", config.sections[key]?.nextPageBottom || "26px");
     link.href = `#${next.id}`;
     link.append(text("span", "next-page-arrow", "↓"));
     page.classList.add("has-next-page");
     page.append(link);
-    pagePrompts.push({ page, link });
+    pagePrompts.push({ destination: next, link });
     link.addEventListener("click", (event) => {
       // Native anchor navigation retains the section URL and keyboard access.
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -843,20 +869,47 @@
   });
 
   let promptScrollFrame = 0;
-  const hideScrolledPrompts = () => {
+  let navigationReady = false;
+  const updatePageNavigation = () => {
     promptScrollFrame = 0;
-    if (document.body.classList.contains("cover-is-closed")) return;
-    const threshold = Math.max(0, experience.nextPageHideAfterScrollPixels ?? 24);
-    for (const { page, link } of pagePrompts) {
-      if (link.inert || page.getBoundingClientRect().top >= -threshold) continue;
-      link.classList.add("is-dismissed");
-      link.inert = true;
-      link.setAttribute("aria-hidden", "true");
+    if (!navigationReady || document.body.classList.contains("cover-is-closed")) return;
+    const viewportMiddle = window.innerHeight / 2;
+    let currentPage = pages[0];
+    for (const page of pages) {
+      if (page.getBoundingClientRect().top <= viewportMiddle) currentPage = page;
+    }
+    // The final section can be shorter than half a screen.
+    if (window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+      currentPage = pages.at(-1);
+    }
+    const currentIndex = pages.indexOf(currentPage);
+    for (const { destination, link } of pagePrompts) {
+      const hide = experience.nextPageHideAfterVisit && currentIndex >= pages.indexOf(destination);
+      link.classList.toggle("is-dismissed", hide);
+      link.inert = Boolean(hide);
+      if (hide) link.setAttribute("aria-hidden", "true");
+      else link.removeAttribute("aria-hidden");
+    }
+    if (experience.syncPageHash && currentPage && location.hash !== `#${currentPage.id}`) {
+      history.replaceState(history.state, "", `#${currentPage.id}`);
     }
   };
-  window.addEventListener("scroll", () => {
-    if (!promptScrollFrame) promptScrollFrame = requestAnimationFrame(hideScrolledPrompts);
-  }, { passive: true });
+  const schedulePromptCheck = () => {
+    if (!promptScrollFrame) promptScrollFrame = requestAnimationFrame(updatePageNavigation);
+  };
+  window.addEventListener("scroll", schedulePromptCheck, { passive: true });
+  window.addEventListener("resize", schedulePromptCheck, { passive: true });
+  window.addEventListener("hashchange", schedulePromptCheck);
+  const initialisePageNavigation = () => {
+    const destination = pages.find((page) => location.hash === `#${page.id}`);
+    if (destination && !document.body.classList.contains("cover-is-closed")) {
+      destination.scrollIntoView({ behavior: "instant", block: "start" });
+    }
+    navigationReady = true;
+    schedulePromptCheck();
+  };
+  window.addEventListener("load", initialisePageNavigation, { once: true });
+  if (document.readyState === "complete") requestAnimationFrame(initialisePageNavigation);
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let entranceObserver;
@@ -969,13 +1022,16 @@
       let landed = false;
       let landingAnimation;
       const seal = cover.querySelector(".cover-seal");
+      const openCue = cover.querySelector(".cover-open-cue");
       const feather = cover.querySelector(".cover-feather");
       const finishLanding = () => {
         if (opening || cover.hidden || landed) return;
         landed = true;
         cover.classList.add("feather-has-landed");
         seal.disabled = false;
-        cover.querySelector(".cover-hint").textContent = config.sections.cover.hint || "";
+        cover.querySelector(".cover-waiting-hint").hidden = true;
+        openCue.hidden = false;
+        openCue.disabled = false;
       };
       const landFeather = async () => {
         await Promise.allSettled([feather.decode(), cover.querySelector(".cover-artwork").decode()]);
@@ -1029,6 +1085,7 @@
         opening = true;
         landingAnimation?.cancel();
         seal.disabled = true;
+        openCue.disabled = true;
         cover.classList.add("is-opening");
         document.body.classList.add("cover-is-opening");
         const duration = Math.max(0, Math.min(1500, config.sections.cover.openingDurationMilliseconds || 850));
@@ -1049,8 +1106,10 @@
         destination.tabIndex = -1;
         destination.focus({ preventScroll: true });
         history.replaceState(null, "", `#${destination.id}`);
+        schedulePromptCheck();
       };
       seal.addEventListener("click", () => openCover());
+      openCue.addEventListener("click", () => openCover());
       window.addEventListener("hashchange", () => {
         const destination = pages.find((page) => `#${page.id}` === location.hash);
         if (destination) openCover(true, destination);
