@@ -646,7 +646,7 @@ p, h1, h2 { margin: 0; }
 .with-love-page {
   overflow: clip;
   min-height: 0;
-  padding: clamp(40px, 10cqi, 64px) clamp(24px, 6cqi, 36px) clamp(40px, 10cqi, 64px);
+  padding: clamp(12px, 3cqi, 24px) clamp(24px, 6cqi, 36px) clamp(68px, 17cqi, 104px);
   display: grid;
   align-content: start;
 }
@@ -662,10 +662,10 @@ p, h1, h2 { margin: 0; }
 .with-love-content > .ornament { margin: 14px auto; }
 .with-love-message { font-size: clamp(14px, 3.2cqi, 19px); color: var(--accent); font-style: italic; margin: 6px auto clamp(14px, 4cqi, 22px); max-width: 32ch; }
 .with-love-family { font: 400 clamp(20px, 5cqi, 30px)/1.4 var(--name-font); color: var(--accent); margin: 0 auto; max-width: 24ch; text-wrap: balance; }
-.with-love-contacts { margin-top: clamp(22px, 6cqi, 34px); }
+.with-love-contacts { margin-top: clamp(22px, 6cqi, 34px); text-align: right; padding-right: clamp(12px, 5cqi, 32px); }
 .with-love-contacts-heading { font-size: clamp(12px, 2.6cqi, 15px); color: var(--accent); letter-spacing: 0.04em; margin-bottom: 8px; }
-.with-love-contact-list { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px clamp(16px, 5cqi, 28px); }
-.with-love-contact { font-size: clamp(13px, 3cqi, 17px); color: var(--ink); }
+.with-love-contact-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.with-love-contact { font-size: clamp(16px, 4cqi, 23px); color: var(--ink); }
 .with-love-contact-name { font-weight: 600; color: var(--accent); }
 .with-love-contact-phone { color: var(--accent); text-decoration: none; text-underline-offset: 3px; }
 .with-love-contact-phone:hover { text-decoration: underline; }

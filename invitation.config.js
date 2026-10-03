@@ -128,13 +128,13 @@ window.INVITATION_CONFIG = {
       people: {
         groom: {
           name: "Tushar",
-          parents: "S/o Mrs. Madhu & Mr. Omm Prakash Saraogi",
-          grandparents: "Grandson of Late Mrs. Sarda Devi & Late Mr. Murari Lal Saraogi",
+          parents: "S/o Mrs. Madhu & Mr. Omm Parkash Saraogi",
+          grandparents: "Grandson of Late Sarda Devi & Late Murari Lal Ji Saraogi",
         },
         bride: {
           name: "Roli",
           parents: "D/o Mrs. Nikita & Mr. Vikash Agarwal",
-          grandparents: "Granddaughter of Late Mrs. Bimla & Late Mr. RadheShyam Agarwal",
+          grandparents: "Granddaughter of Late Bimla & Late RadheShyam Ji Agarwal",
         },
       },
     },
@@ -248,6 +248,7 @@ window.INVITATION_CONFIG = {
           title: "Ek Shaam Shyam Ke Naam",
           ceremony: "Bhajan Sandhya",
           dateTime: "2026-11-19T17:00:00+05:30",
+          onwards: true,
           venue: "parvati",
           image: "assets/events/ShreeKrishna.jpeg",
           imageAlt: "Illustrated couple celebrating together",
@@ -257,7 +258,7 @@ window.INVITATION_CONFIG = {
           ceremony: "Bhaat",
           dateTime: "2026-11-20T12:30:00+05:30",
           venue: "radhe",
-          image: "assets/events/bhaat-gift-ceremony.png",
+          image: "assets/events/myra.png",
           imageAlt: "Family presenting traditional wedding gifts at a Rajasthani Bhaat ceremony",
           imageFit: "cover",
           imagePosition: "65% center",
@@ -265,7 +266,7 @@ window.INVITATION_CONFIG = {
         sangeet: {
           title: "Shaam-e-Sangeet",
           ceremony: "Sangeet",
-          dateTime: "2026-11-20T18:00:00+05:30",
+          dateTime: "2026-11-20T18:30:00+05:30",
           onwards: true,
           venue: "swastik",
           image: "assets/events/sangeet-golden-lights.png",
@@ -307,7 +308,7 @@ window.INVITATION_CONFIG = {
     },
     // Add or reorder slides here. Crops use pixels from the original image.
     moments: {
-      enabled: true,
+      enabled: false,
       background: "assets/moments/minimal-rose-background.png",
       backgroundPosition: "center center",
       backgroundOpacity: 1,
@@ -336,31 +337,31 @@ window.INVITATION_CONFIG = {
           alt: "Roli and Tushar smiling at each other beneath the flowers",
           crop: { x: 1110, y: 591, width: 426, height: 433, sourceWidth: 1536, sourceHeight: 1024 },
         },
-        {
-          image: "assets/moments/couple-collage-2.png",
-          alt: "Roli in red and Tushar in black together in a palace courtyard",
-          crop: { x: 0, y: 0, width: 476, height: 531, sourceWidth: 1536, sourceHeight: 1024 },
-        },
-        {
-          image: "assets/moments/couple-collage-2.png",
-          alt: "Roli and Tushar sitting together on steps beside pink blossoms",
-          crop: { x: 485, y: 0, width: 556, height: 531, sourceWidth: 1536, sourceHeight: 1024 },
-        },
+        // {
+        //   image: "assets/moments/couple-collage-2.png",
+        //   alt: "Roli in red and Tushar in black together in a palace courtyard",
+        //   crop: { x: 0, y: 0, width: 476, height: 531, sourceWidth: 1536, sourceHeight: 1024 },
+        // },
+        // {
+        //   image: "assets/moments/couple-collage-2.png",
+        //   alt: "Roli and Tushar sitting together on steps beside pink blossoms",
+        //   crop: { x: 485, y: 0, width: 556, height: 531, sourceWidth: 1536, sourceHeight: 1024 },
+        // },
         {
           image: "assets/moments/couple-collage-2.png",
           alt: "Tushar kissing Roli on the forehead beside the lake at sunset",
           crop: { x: 1051, y: 0, width: 485, height: 531, sourceWidth: 1536, sourceHeight: 1024 },
         },
-        {
-          image: "assets/moments/couple-collage-2.png",
-          alt: "Roli and Tushar walking hand in hand through the garden",
-          crop: { x: 0, y: 539, width: 522, height: 485, sourceWidth: 1536, sourceHeight: 1024 },
-        },
-        {
-          image: "assets/moments/couple-collage-2.png",
-          alt: "Roli in blue resting her head on Tushar's shoulder by the lake",
-          crop: { x: 532, y: 539, width: 529, height: 485, sourceWidth: 1536, sourceHeight: 1024 },
-        },
+        // {
+        //   image: "assets/moments/couple-collage-2.png",
+        //   alt: "Roli and Tushar walking hand in hand through the garden",
+        //   crop: { x: 0, y: 539, width: 522, height: 485, sourceWidth: 1536, sourceHeight: 1024 },
+        // },
+        // {
+        //   image: "assets/moments/couple-collage-2.png",
+        //   alt: "Roli in blue resting her head on Tushar's shoulder by the lake",
+        //   crop: { x: 532, y: 539, width: 529, height: 485, sourceWidth: 1536, sourceHeight: 1024 },
+        // },
         {
           image: "assets/moments/couple-collage-2.png",
           alt: "Roli and Tushar in red and maroon beneath pink bougainvillea",
@@ -379,7 +380,7 @@ window.INVITATION_CONFIG = {
       heading: "With Love",
       message: "Awaiting your gracious presence",
       // The family line shown beneath the message.
-      family: "Vijay, Vinay, Vinod and the entire Agarwal family",
+      family: "Vijay, Binay, Binod and the entire Agarwal family",
       // Contact people shown at the bottom.
       contactsHeading: "For any queries, please contact",
       contacts: [
