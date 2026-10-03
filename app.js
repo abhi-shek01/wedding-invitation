@@ -681,7 +681,136 @@
     return page;
   };
 
-  const renderers = { cover: renderCover, invitation: renderInvitation, saveTheDate: renderSaveTheDate, events: renderEvents };
+  const renderMoments = (section) => {
+    const page = document.createElement("section");
+    page.id = "moments";
+    page.className = "invitation-page moments-page";
+    page.setAttribute("aria-labelledby", "moments-heading");
+    for (const [key, property] of Object.entries(themeProperties)) {
+      if (section[key] !== undefined) page.style.setProperty(property, section[key]);
+    }
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "events-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+    const background = document.createElement("img");
+    background.className = "invitation-background";
+    background.src = section.background;
+    background.alt = "";
+    background.loading = "lazy";
+    backdrop.append(background);
+    page.append(backdrop);
+
+    const content = document.createElement("div");
+    content.className = "moments-content";
+    const header = document.createElement("header");
+    header.className = "moments-header";
+    const heading = text("h2", "moments-heading", section.heading);
+    heading.id = "moments-heading";
+    header.append(heading, ornament());
+    if (section.subheading) header.append(text("p", "moments-subheading", section.subheading));
+    content.append(header);
+
+    const gallery = document.createElement("div");
+    gallery.className = "moments-gallery";
+    gallery.setAttribute("role", "list");
+    gallery.setAttribute("aria-label", section.heading);
+    gallery.tabIndex = 0;
+    (section.items || []).forEach((item, index) => {
+      if (!item || item.enabled === false || !item.image) return;
+      const figure = document.createElement("figure");
+      figure.className = "moment-card";
+      figure.setAttribute("role", "listitem");
+      const frame = document.createElement("div");
+      frame.className = "moment-image-frame";
+      const picture = document.createElement("img");
+      picture.src = item.image;
+      picture.alt = item.alt || `Moment ${index + 1}`;
+      picture.loading = "lazy";
+      picture.decoding = "async";
+      picture.style.objectFit = item.imageFit || "cover";
+      picture.style.objectPosition = item.imagePosition || "center center";
+      frame.append(picture);
+      figure.append(frame);
+      gallery.append(figure);
+    });
+    content.append(gallery);
+    if (section.scrollHint) content.append(text("p", "moments-scroll-hint", section.scrollHint));
+
+    const previous = config.sectionOrder.slice(0, config.sectionOrder.indexOf("moments")).reverse()
+      .find((key) => config.sections[key]?.enabled);
+    if (previous && section.backLinkLabel) {
+      const pageId = { saveTheDate: "save-the-date", invitation: "welcome", events: "events", cover: "cover" }[previous] || previous;
+      const link = text("a", "events-back-link", section.backLinkLabel);
+      link.href = `#${pageId}`;
+      content.append(ornament(), link);
+    }
+    page.append(content);
+    return page;
+  };
+
+  const renderWithLove = (section) => {
+    const page = document.createElement("section");
+    page.id = "with-love";
+    page.className = "invitation-page with-love-page";
+    page.setAttribute("aria-labelledby", "with-love-heading");
+    for (const [key, property] of Object.entries(themeProperties)) {
+      if (section[key] !== undefined) page.style.setProperty(property, section[key]);
+    }
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "events-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+    const background = document.createElement("img");
+    background.className = "invitation-background";
+    background.src = section.background;
+    background.alt = "";
+    background.loading = "lazy";
+    backdrop.append(background);
+    page.append(backdrop);
+
+    const content = document.createElement("div");
+    content.className = "with-love-content";
+    const heading = text("h2", "with-love-heading", section.heading);
+    heading.id = "with-love-heading";
+    content.append(heading, ornament());
+    if (section.message) content.append(text("p", "with-love-message", section.message));
+    if (section.family) content.append(text("p", "with-love-family", section.family));
+
+    const contacts = (section.contacts || []).filter((entry) => entry && entry.name && entry.phone);
+    if (contacts.length) {
+      const block = document.createElement("div");
+      block.className = "with-love-contacts";
+      if (section.contactsHeading) block.append(text("p", "with-love-contacts-heading", section.contactsHeading));
+      const list = document.createElement("ul");
+      list.className = "with-love-contact-list";
+      contacts.forEach((entry) => {
+        const item = document.createElement("li");
+        item.className = "with-love-contact";
+        item.append(text("span", "with-love-contact-name", `${entry.name}: `));
+        const digits = String(entry.phone).replace(/[^+\d]/g, "");
+        const link = text("a", "with-love-contact-phone", entry.phone);
+        link.href = `tel:${digits}`;
+        item.append(link);
+        list.append(item);
+      });
+      block.append(list);
+      content.append(block);
+    }
+
+    const previous = config.sectionOrder.slice(0, config.sectionOrder.indexOf("withLove")).reverse()
+      .find((key) => config.sections[key]?.enabled);
+    if (previous && section.backLinkLabel) {
+      const pageId = { moments: "moments", events: "events", saveTheDate: "save-the-date", invitation: "welcome", cover: "cover" }[previous] || previous;
+      const link = text("a", "events-back-link", section.backLinkLabel);
+      link.href = `#${pageId}`;
+      content.append(ornament(), link);
+    }
+    page.append(content);
+    return page;
+  };
+
+  const renderers = { cover: renderCover, invitation: renderInvitation, saveTheDate: renderSaveTheDate, events: renderEvents, moments: renderMoments, withLove: renderWithLove };
   for (const key of config.sectionOrder) {
     const section = config.sections[key];
     if (section?.enabled && renderers[key]) {
@@ -741,7 +870,7 @@
     }, { threshold: 0.02 });
     pages.forEach((page) => {
       page.classList.add("motion-ready");
-      const content = page.querySelector(".invitation-content, .save-date-content, .events-content");
+      const content = page.querySelector(".invitation-content, .save-date-content, .events-content, .moments-content, .with-love-content");
       [...content.children].filter((child) => !child.classList.contains("visually-hidden") && !child.hidden)
         .forEach((child, index) => child.style.setProperty("--arrival-delay", `${index * 85}ms`));
       entranceObserver.observe(page);

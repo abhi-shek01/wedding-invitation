@@ -539,6 +539,85 @@ p, h1, h2 { margin: 0; }
 .events-back-link { display: block; width: fit-content; margin-inline: auto; padding: 10px 16px; color: var(--accent); font-size: 14px; text-underline-offset: 4px; }
 .event-card.motion-ready:not(.is-visible), .events-page.motion-ready:not(.is-visible) .events-header { opacity: 0; transform: translateY(12px); }
 .event-card.motion-ready.is-visible, .events-page.motion-ready.is-visible .events-header { animation: arrive 800ms ease-out both; }
+
+/* Our moments of love — horizontally scrollable gallery */
+.moments-page {
+  overflow: clip;
+  padding: clamp(56px, 15cqi, 90px) clamp(16px, 4cqi, 26px) 76px;
+}
+.moments-content { width: 100%; min-width: 0; }
+.moments-header { text-align: center; margin-bottom: 22px; background: radial-gradient(ellipse closest-side, color-mix(in srgb, var(--paper) 94%, transparent) 60%, transparent 100%); }
+.moments-heading { font: 400 clamp(32px, 7cqi, 42px)/1.2 var(--name-font); color: var(--accent); text-wrap: balance; text-shadow: 0 1px 8px var(--paper); }
+.moments-header .ornament { margin: 12px auto 0; }
+.moments-subheading { font-size: clamp(12px, 2.6cqi, 15px); color: var(--accent); margin-top: 6px; }
+.moments-gallery {
+  display: flex;
+  gap: clamp(14px, 4cqi, 22px);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px clamp(10px, 6cqi, 40px) 14px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--gold) 55%, transparent) transparent;
+}
+.moments-gallery::-webkit-scrollbar { height: 7px; }
+.moments-gallery::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--gold) 55%, transparent); border-radius: 8px; }
+.moments-gallery:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 16px; }
+.moment-card {
+  flex: 0 0 min(78%, 320px);
+  margin: 0;
+  scroll-snap-align: center;
+}
+.moment-image-frame {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 18px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--paper) 65%, white);
+  box-shadow: 0 8px 24px rgb(115 81 57 / 0.12);
+}
+.moment-image-frame img { display: block; width: 100%; height: 100%; }
+.moments-scroll-hint { text-align: center; font-size: clamp(11px, 2.4cqi, 13px); color: var(--accent); opacity: 0.8; margin-top: 10px; }
+.moments-content > .ornament { margin: 34px auto 18px; }
+.moments-page.motion-ready:not(.is-visible) .moments-header { opacity: 0; transform: translateY(12px); }
+.moments-page.motion-ready.is-visible .moments-header { animation: arrive 800ms ease-out both; }
+
+/* With Love — family closing page */
+.with-love-page {
+  overflow: clip;
+  min-height: 0;
+  padding: clamp(40px, 10cqi, 64px) clamp(24px, 6cqi, 36px) clamp(40px, 10cqi, 64px);
+  display: grid;
+  align-content: start;
+}
+.with-love-page .events-backdrop .invitation-background { position: absolute; height: 100%; }
+.with-love-content {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  background: radial-gradient(ellipse closest-side, color-mix(in srgb, var(--paper) 92%, transparent) 55%, transparent 100%);
+  padding: clamp(20px, 6cqi, 40px) clamp(10px, 4cqi, 24px);
+}
+.with-love-heading { font: 400 clamp(34px, 8cqi, 48px)/1.2 var(--name-font); color: var(--accent); text-wrap: balance; text-shadow: 0 1px 8px var(--paper); }
+.with-love-content > .ornament { margin: 14px auto; }
+.with-love-message { font-size: clamp(14px, 3.2cqi, 19px); color: var(--accent); font-style: italic; margin: 6px auto clamp(14px, 4cqi, 22px); max-width: 32ch; }
+.with-love-family { font: 400 clamp(20px, 5cqi, 30px)/1.4 var(--name-font); color: var(--accent); margin: 0 auto; max-width: 24ch; text-wrap: balance; }
+.with-love-contacts { margin-top: clamp(22px, 6cqi, 34px); }
+.with-love-contacts-heading { font-size: clamp(12px, 2.6cqi, 15px); color: var(--accent); letter-spacing: 0.04em; margin-bottom: 8px; }
+.with-love-contact-list { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px clamp(16px, 5cqi, 28px); }
+.with-love-contact { font-size: clamp(13px, 3cqi, 17px); color: var(--ink); }
+.with-love-contact-name { font-weight: 600; color: var(--accent); }
+.with-love-contact-phone { color: var(--accent); text-decoration: none; text-underline-offset: 3px; }
+.with-love-contact-phone:hover { text-decoration: underline; }
+.with-love-contact-phone:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+.with-love-content > .ornament:last-of-type { margin-top: clamp(26px, 7cqi, 40px); }
+.with-love-page.motion-ready:not(.is-visible) .with-love-content { opacity: 0; transform: translateY(12px); }
+.with-love-page.motion-ready.is-visible .with-love-content { animation: arrive 800ms ease-out both; }
+
+
 @container (max-width: 360px) {
   .event-card { padding: 10px; gap: 10px; }
   .event-top { gap: 4px; }

@@ -61,7 +61,7 @@ window.INVITATION_CONFIG = {
       durationSeconds: 18,
     },
   },
-  sectionOrder: ["cover", "invitation", "saveTheDate", "events"],
+  sectionOrder: ["cover", "invitation", "saveTheDate", "events", /* "moments", */ "withLove"],
   sections: {
     cover: {
       enabled: true,
@@ -206,6 +206,7 @@ window.INVITATION_CONFIG = {
       textWashOpacity: 0,
       heading: "Celebrations",
       timeNote: "",
+      nextPageLabel: "With love from our family",
       dateFormat: { month: "short", commaBeforeYear: true },
       timeZone: "Asia/Kolkata",
       locale: "en-IN",
@@ -288,6 +289,69 @@ window.INVITATION_CONFIG = {
           imageAlt: "Illustrated couple taking wedding vows by the sacred fire",
         },
       },
+    },
+    /* "Our moments of love" — temporarily disabled. Re-enable by uncommenting
+       this block and the "moments" entry in sectionOrder above.
+    moments: {
+      enabled: true,
+      background: "assets/events-background.png",
+      backgroundPosition: "center center",
+      backgroundOpacity: 1,
+      backgroundBlur: "0px",
+      whiteScreenOpacity: 0.04,
+      textWashOpacity: 0,
+      heading: "Our moments of love",
+      subheading: "A few of our favourite memories together",
+      nextPageLabel: "With love from our family",
+      // Swipe or scroll sideways through the gallery. Replace the image paths below.
+      scrollHint: "Swipe to see more →",
+      backLinkLabel: "Back to the celebrations",
+      items: [
+        {
+          image: "assets/moments/moment-1.jpg",
+          alt: "Roli and Tushar together",
+          imageFit: "cover",
+          imagePosition: "center center",
+        },
+        {
+          image: "assets/moments/moment-2.jpg",
+          alt: "Roli and Tushar together",
+          imageFit: "cover",
+          imagePosition: "center center",
+        },
+        {
+          image: "assets/moments/moment-3.jpg",
+          alt: "Roli and Tushar together",
+          imageFit: "cover",
+          imagePosition: "center center",
+        },
+        {
+          image: "assets/moments/moment-4.jpg",
+          alt: "Roli and Tushar together",
+          imageFit: "cover",
+          imagePosition: "center center",
+        },
+      ],
+    },
+    */
+    withLove: {
+      enabled: true,
+      background: "assets/events-background.png",
+      backgroundPosition: "center center",
+      backgroundOpacity: 1,
+      backgroundBlur: "0px",
+      whiteScreenOpacity: 0.04,
+      textWashOpacity: 0,
+      heading: "With Love",
+      message: "Awaiting your gracious presence",
+      // The family line shown beneath the message.
+      family: "Vijay, Vinay, Vinod and the entire Agarwal family",
+      // Contact people shown at the bottom.
+      contactsHeading: "For any queries, please contact",
+      contacts: [
+        { name: "Vikash", phone: "9830563875" },
+        { name: "Abhishek", phone: "8622939716" },
+      ],
     },
   },
 };
