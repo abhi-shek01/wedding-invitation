@@ -210,6 +210,17 @@
     sealLogo.src = section.sealLogo || section.logo;
     sealLogo.alt = "";
     seal.append(sealLogo, feather);
+    const tapDemo = text("span", "cover-tap-demo", "");
+    tapDemo.setAttribute("aria-hidden", "true");
+    tapDemo.append(text("span", "cover-tap-ring", ""), text("span", "cover-tap-ring cover-tap-ring-second", ""));
+    const tapHand = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    tapHand.setAttribute("viewBox", "0 0 32 40");
+    tapHand.classList.add("cover-tap-hand");
+    const handPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    handPath.setAttribute("d", "M11 22V5a3 3 0 0 1 6 0v13-4a3 3 0 0 1 6 0v5-2a3 3 0 0 1 6 0v10c0 6-4 10-10 10h-3c-3 0-5-2-7-5l-6-8a3 3 0 0 1 5-3l3 4Z");
+    tapHand.append(handPath);
+    tapDemo.append(tapHand);
+    seal.append(tapDemo);
     const hint = text("p", "cover-hint", "");
     hint.id = "cover-opening-hint";
     hint.setAttribute("role", "status");
@@ -735,14 +746,18 @@
 
     const gallery = document.createElement("div");
     gallery.className = "moments-gallery";
-    gallery.setAttribute("role", "list");
+    gallery.setAttribute("role", "region");
+    gallery.setAttribute("aria-roledescription", "carousel");
     gallery.setAttribute("aria-label", section.heading);
     gallery.tabIndex = 0;
-    (section.items || []).forEach((item, index) => {
-      if (!item || item.enabled === false || !item.image) return;
+    const slideItems = (section.items || []).filter((item) => item && item.enabled !== false && item.image);
+    slideItems.forEach((item, index) => {
       const figure = document.createElement("figure");
       figure.className = "moment-card";
-      figure.setAttribute("role", "listitem");
+      figure.setAttribute("role", "group");
+      figure.setAttribute("aria-roledescription", "slide");
+      figure.setAttribute("aria-label", `${index + 1} of ${slideItems.length}`);
+      figure.hidden = index !== 0;
       const frame = document.createElement("div");
       frame.className = "moment-image-frame";
       const picture = document.createElement("img");
@@ -752,12 +767,110 @@
       picture.decoding = "async";
       picture.style.objectFit = item.imageFit || "cover";
       picture.style.objectPosition = item.imagePosition || "center center";
+      if (item.crop) {
+        const crop = item.crop;
+        frame.classList.add("moment-image-crop");
+        frame.style.setProperty("--moment-ratio", crop.width / crop.height);
+        picture.style.width = `${crop.sourceWidth / crop.width * 100}%`;
+        picture.style.height = `${crop.sourceHeight / crop.height * 100}%`;
+        picture.style.left = `${-crop.x / crop.width * 100}%`;
+        picture.style.top = `${-crop.y / crop.height * 100}%`;
+        picture.style.objectFit = "fill";
+      }
+      // Separate clipped photo frames preserve the exact pixels of supplied collages.
       frame.append(picture);
       figure.append(frame);
       gallery.append(figure);
     });
-    content.append(gallery);
-    if (section.scrollHint) content.append(text("p", "moments-scroll-hint", section.scrollHint));
+    if (gallery.childElementCount) {
+      content.append(gallery);
+      if (slideItems.length > 1) {
+        const slides = [...gallery.children];
+        const controls = text("div", "moments-controls", "");
+        const previousButton = text("button", "moments-slide-arrow", "‹");
+        const nextButton = text("button", "moments-slide-arrow", "›");
+        previousButton.type = nextButton.type = "button";
+        previousButton.setAttribute("aria-label", section.slideshow?.previousLabel || "Previous photograph");
+        nextButton.setAttribute("aria-label", section.slideshow?.nextLabel || "Next photograph");
+        const dots = text("div", "moments-slide-dots", "");
+        const status = text("p", "visually-hidden", `Photograph 1 of ${slides.length}`);
+        status.setAttribute("aria-live", "polite");
+        status.setAttribute("aria-atomic", "true");
+        let current = 0;
+        const autoplay = section.slideshow?.autoplay === true;
+        const interval = Math.max(2, Number(section.slideshow?.intervalSeconds) || 5) * 1000;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let autoplayTimer;
+        let paused = reducedMotion.matches;
+        let inView = false;
+        let hovering = false;
+        let touching = false;
+        const stopAutoplay = () => window.clearTimeout(autoplayTimer);
+        const scheduleAutoplay = () => {
+          stopAutoplay();
+          if (!autoplay || paused || !inView || hovering || touching || document.hidden || content.contains(document.activeElement)) return;
+          autoplayTimer = window.setTimeout(() => showSlide(current + 1, true), interval);
+        };
+        const dotButtons = slides.map((_, index) => {
+          const dot = text("button", "moments-slide-dot", "");
+          dot.type = "button";
+          dot.setAttribute("aria-label", `Show photograph ${index + 1}`);
+          if (index === 0) dot.setAttribute("aria-current", "true");
+          dot.addEventListener("click", () => showSlide(index));
+          dots.append(dot);
+          return dot;
+        });
+        const showSlide = (index, automatic = false) => {
+          current = (index + slides.length) % slides.length;
+          slides.forEach((slide, i) => { slide.hidden = i !== current; });
+          dotButtons.forEach((dot, i) => {
+            if (i === current) dot.setAttribute("aria-current", "true");
+            else dot.removeAttribute("aria-current");
+          });
+          status.setAttribute("aria-live", automatic ? "off" : "polite");
+          status.textContent = `Photograph ${current + 1} of ${slides.length}`;
+          scheduleAutoplay();
+        };
+        previousButton.addEventListener("click", () => showSlide(current - 1));
+        nextButton.addEventListener("click", () => showSlide(current + 1));
+        gallery.addEventListener("keydown", (event) => {
+          if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+          event.preventDefault();
+          showSlide(current + (event.key === "ArrowRight" ? 1 : -1));
+        });
+        let gestureStart;
+        gallery.addEventListener("pointerdown", (event) => {
+          if (!event.isPrimary || event.button !== 0) return;
+          touching = true;
+          stopAutoplay();
+          gestureStart = { x: event.clientX, y: event.clientY };
+          gallery.setPointerCapture(event.pointerId);
+        });
+        gallery.addEventListener("pointerup", (event) => {
+          if (!gestureStart) return;
+          const dx = event.clientX - gestureStart.x;
+          const dy = event.clientY - gestureStart.y;
+          gestureStart = undefined;
+          touching = false;
+          if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) showSlide(current + (dx < 0 ? 1 : -1));
+          else scheduleAutoplay();
+        });
+        gallery.addEventListener("pointercancel", () => { gestureStart = undefined; touching = false; scheduleAutoplay(); });
+        controls.append(previousButton, dots, nextButton);
+        content.append(controls, status);
+        if (autoplay) {
+          content.addEventListener("pointerenter", (event) => { if (event.pointerType !== "touch") { hovering = true; stopAutoplay(); } });
+          content.addEventListener("pointerleave", () => { hovering = false; scheduleAutoplay(); });
+          content.addEventListener("focusin", stopAutoplay);
+          content.addEventListener("focusout", () => window.setTimeout(scheduleAutoplay, 0));
+          document.addEventListener("visibilitychange", scheduleAutoplay);
+          reducedMotion.addEventListener("change", (event) => { paused = event.matches; scheduleAutoplay(); });
+          new IntersectionObserver(([entry]) => { inView = entry.intersectionRatio >= 0.6; scheduleAutoplay(); }, { threshold: 0.6 }).observe(gallery);
+        }
+      }
+    } else if (section.emptyMessage) {
+      content.append(text("p", "moments-empty", section.emptyMessage));
+    }
 
     const previous = config.sectionOrder.slice(0, config.sectionOrder.indexOf("moments")).reverse()
       .find((key) => config.sections[key]?.enabled);
@@ -1024,6 +1137,39 @@
       const seal = cover.querySelector(".cover-seal");
       const openCue = cover.querySelector(".cover-open-cue");
       const feather = cover.querySelector(".cover-feather");
+      let tapTimer;
+      const stopTapDemo = () => {
+        clearTimeout(tapTimer);
+        cover.classList.remove("is-demonstrating-tap");
+      };
+      const demonstrateTap = () => {
+        stopTapDemo();
+        if (!landed || opening || cover.hidden || document.hidden || reducedMotion.matches
+          || !config.sections.cover.tapGuidance?.enabled) return;
+        cover.classList.add("is-demonstrating-tap");
+        tapTimer = setTimeout(() => {
+          cover.classList.remove("is-demonstrating-tap");
+          waitForIdleTap();
+        }, 2400);
+      };
+      const waitForIdleTap = () => {
+        stopTapDemo();
+        if (!landed || opening || cover.hidden || document.hidden || reducedMotion.matches
+          || !config.sections.cover.tapGuidance?.enabled) return;
+        const idle = Math.max(2, config.sections.cover.tapGuidance?.repeatAfterIdleSeconds || 3);
+        tapTimer = setTimeout(demonstrateTap, idle * 1000);
+      };
+      cover.addEventListener("pointermove", waitForIdleTap, { passive: true });
+      cover.addEventListener("pointerdown", waitForIdleTap, { passive: true });
+      cover.addEventListener("keydown", waitForIdleTap);
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopTapDemo();
+        else if (landed) waitForIdleTap();
+      });
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) stopTapDemo();
+        else if (landed) waitForIdleTap();
+      });
       const finishLanding = () => {
         if (opening || cover.hidden || landed) return;
         landed = true;
@@ -1032,6 +1178,7 @@
         cover.querySelector(".cover-waiting-hint").hidden = true;
         openCue.hidden = false;
         openCue.disabled = false;
+        demonstrateTap();
       };
       const landFeather = async () => {
         await Promise.allSettled([feather.decode(), cover.querySelector(".cover-artwork").decode()]);
@@ -1083,6 +1230,7 @@
       const openCover = async (immediate = false, destination = pages[0]) => {
         if (opening || cover.hidden || (!immediate && !landed)) return;
         opening = true;
+        stopTapDemo();
         landingAnimation?.cancel();
         seal.disabled = true;
         openCue.disabled = true;
