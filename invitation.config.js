@@ -114,7 +114,7 @@ window.INVITATION_CONFIG = {
         image: "assets/ganeshji.png",
         alt: "Lord Ganesha blessing the wedding",
       },
-      blessing: "॥ ॐ श्री गणेशाय नमः ॥",
+      blessing: "॥ श्री गणेशाय नमः ॥",
       blessingLanguage: "hi",
       introduction: "We request the honor of your gracious presence on the auspicious occasion of the wedding celebration of",
       // Swap these keys to change the order of the couple.
@@ -160,7 +160,7 @@ window.INVITATION_CONFIG = {
         image: "assets/rt-monogram-refined.png",
         alt: "R | T gold botanical wedding monogram",
         initials: ["R", "T"],
-        floating: true,
+        floating: false,
         floatDurationSeconds: 7,
       },
       scratch: {
@@ -216,7 +216,7 @@ window.INVITATION_CONFIG = {
       eventOrder: ["shyam", "bhaat", "sangeet", "haldi", "baraat", "pheras"],
       venues: {
         parvati: {
-          name: "Parvati Vihar",
+          name: "Parvati Vihar Community Hall",
           address: "52/6, VIP Road, Sahabagan, Raghunathpur, Baguiati, Kolkata, West Bengal 700059",
           mapUrl: "https://maps.app.goo.gl/RGTVJhnzcfUxa39f6",
         },
@@ -243,11 +243,11 @@ window.INVITATION_CONFIG = {
           ceremony: "Bhajan Sandhya",
           dateTime: "2026-11-19T17:00:00+05:30",
           venue: "parvati",
-          image: "assets/events/purvi-6.jpg",
+          image: "assets/events/ShreeKrishna.jpeg",
           imageAlt: "Illustrated couple celebrating together",
         },
         bhaat: {
-          title: "Biro Bhaat Bharan Ne Aayo",
+          title: "Beero Bhaat Bharan Ne Aayo",
           ceremony: "Bhaat",
           dateTime: "2026-11-20T12:30:00+05:30",
           venue: "radhe",

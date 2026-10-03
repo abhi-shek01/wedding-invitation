@@ -217,7 +217,8 @@ p, h1, h2 { margin: 0; }
 .grandparents {
   max-width: 450px;
   margin: 4px auto 0;
-  font-size: clamp(13px, 2.6cqi, 15px);
+  /* Scales with the page width so each grandparents line stays on one line on phones. */
+  font-size: clamp(10px, calc(3.55cqi - 1.8px), 15px);
   font-weight: 500;
   line-height: 1.6;
   font-style: italic;
@@ -252,7 +253,6 @@ p, h1, h2 { margin: 0; }
 @media (max-width: 380px) {
   .invitation-page { padding-inline: 18px; }
   .parents { font-size: 13px; }
-  .grandparents { font-size: 13px; }
 }
 @container (max-width: 480px) {
   #welcome { padding-top: 24px; }
