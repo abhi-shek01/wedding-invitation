@@ -134,7 +134,7 @@ window.INVITATION_CONFIG = {
         bride: {
           name: "Roli",
           parents: "D/o Mrs. Nikita & Mr. Vikash Agarwal",
-          grandparents: "Granddaughter of Late Bimla & Late RadheShyam Ji Agarwal",
+          grandparents: "Grand daughter of Late Bimla & Late RadheShyam Ji Agarwal",
         },
       },
     },
