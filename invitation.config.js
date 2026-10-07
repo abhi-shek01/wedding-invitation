@@ -219,7 +219,7 @@ window.INVITATION_CONFIG = {
       onwardsLabel: "onwards",
       backLinkLabel: "",
       // Change this list to reorder events; all card pictures are replaceable below.
-      eventOrder: ["shyam", "bhaat", "sangeet", "haldi", "baraat", "pheras"],
+      eventOrder: ["baraat", "pheras"],
       venues: {
         parvati: {
           name: "Parvati Vihar Community Hall",
