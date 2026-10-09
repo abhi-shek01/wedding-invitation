@@ -279,10 +279,10 @@ window.INVITATION_CONFIG = {
           ceremony: "Haldi",
           dateTime: "2026-11-21T10:00:00+05:30",
           venue: "radhe",
-          image: "assets/events/haldi-pastel-celebration.png",
-          imageAlt: "Bride celebrating Haldi beneath pastel flowers with turmeric and falling petals",
+          image: "assets/events/haldi-groom.png",
+          imageAlt: "Groom celebrating Haldi beneath pastel flowers with turmeric and falling petals",
           imageFit: "cover",
-          imagePosition: "center 40%",
+          imagePosition: "center 28%",
         },
         baraat: {
           title: "Band Baja Baraat",
