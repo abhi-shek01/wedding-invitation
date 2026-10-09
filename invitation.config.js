@@ -73,7 +73,7 @@ window.INVITATION_CONFIG = {
       background: "assets/radha-krishna-cover.png",
       imageAlt: "Radha and Krishna standing affectionately together beneath a floral arch",
       backgroundPosition: "center bottom",
-      logo: "assets/rt-monogram-refined.png",
+      logo: "assets/tr-monogram-refined.png",
       logoAlt: "R | T wedding monogram",
       hashtag: "#foreverRoShar",
       hashtagFont: "Georgia, 'Times New Roman', serif",
@@ -82,7 +82,7 @@ window.INVITATION_CONFIG = {
       hint: "Tap to open",
       waitingHint: "A little magic is on its way…",
       tapGuidance: { enabled: true, repeatAfterIdleSeconds: 3 },
-      sealLogo: "assets/rt-monogram-refined.png",
+      sealLogo: "assets/tr-monogram-refined.png",
       sealPulse: {
         enabled: true,
         durationSeconds: 3.2,
@@ -123,7 +123,7 @@ window.INVITATION_CONFIG = {
       blessingLanguage: "hi",
       introduction: "We request the honor of your gracious presence on the auspicious occasion of the wedding celebration of",
       // Swap these keys to change the order of the couple.
-      personOrder: ["bride", "groom"],
+      personOrder: ["groom", "bride"],
       connector: "weds",
       people: {
         groom: {
@@ -162,7 +162,7 @@ window.INVITATION_CONFIG = {
         logoGap: "clamp(22px, 6cqi, 36px)",
       },
       monogram: {
-        image: "assets/rt-monogram-refined.png",
+        image: "assets/tr-monogram-refined.png",
         alt: "R | T gold botanical wedding monogram",
         initials: ["R", "T"],
         floating: false,
@@ -219,7 +219,7 @@ window.INVITATION_CONFIG = {
       onwardsLabel: "onwards",
       backLinkLabel: "",
       // Change this list to reorder events; all card pictures are replaceable below.
-      eventOrder: ["shyam", "bhaat", "sangeet", "haldi", "baraat", "pheras"],
+      eventOrder: ["bhaat", "sangeet", "haldi", "baraat", "pheras"],
       venues: {
         parvati: {
           name: "Parvati Vihar Community Hall",
@@ -227,9 +227,9 @@ window.INVITATION_CONFIG = {
           mapUrl: "https://maps.app.goo.gl/RGTVJhnzcfUxa39f6",
         },
         radhe: {
-          name: "Radhe Palace Hotel",
-          address: "882, Lake Town Road, Block A, Lake Town, South Dumdum, West Bengal 700089",
-          mapUrl: "https://maps.app.goo.gl/WfWGf5iBt5UEnim66",
+          name: "Ganges Garden",
+          address: "Block-7, Choura Bustee, Shibpur, Howrah, West Bengal 711102",
+          mapUrl: "https://maps.app.goo.gl/86z5HuCx8jZUvENa6?g_st=aw",
         },
         swastik: {
           name: "Swastik Banquets",
@@ -256,7 +256,7 @@ window.INVITATION_CONFIG = {
         bhaat: {
           title: "Beero Bhaat Bharan Ne Aayo",
           ceremony: "Bhaat",
-          dateTime: "2026-11-20T12:30:00+05:30",
+          dateTime: "2026-11-20T10:00:00+05:30",
           venue: "radhe",
           image: "assets/events/myra.png",
           imageAlt: "Family presenting traditional wedding gifts at a Rajasthani Bhaat ceremony",
@@ -277,7 +277,7 @@ window.INVITATION_CONFIG = {
         haldi: {
           title: "Rang Chada Haldi Ka",
           ceremony: "Haldi",
-          dateTime: "2026-11-21T09:00:00+05:30",
+          dateTime: "2026-11-21T10:00:00+05:30",
           venue: "radhe",
           image: "assets/events/haldi-pastel-celebration.png",
           imageAlt: "Bride celebrating Haldi beneath pastel flowers with turmeric and falling petals",
@@ -380,12 +380,12 @@ window.INVITATION_CONFIG = {
       heading: "With Love",
       message: "Awaiting your gracious presence",
       // The family line shown beneath the message.
-      family: "Vijay, Binay, Binod and the entire Agarwal family",
+      family: "Omm Parkash, Bobby and the entire Saraogi family",
       // Contact people shown at the bottom.
       contactsHeading: "For any queries, please contact",
       contacts: [
-        { name: "Vikash", phone: "9830563875" },
-        { name: "Abhishek", phone: "8622939716" },
+        { name: "Omm Parkash", phone: "8902533783" },
+        { name: "Bobby", phone: "8777253037" },
       ],
     },
   },
